@@ -25,15 +25,19 @@ export interface ReviewItem {
   url: string
 }
 
-export const recentSearches = ["리넨 오버핏 자켓", "와이드 데님 팬츠", "니트 가디건"]
+export const recentSearches = [
+  "무신사 스탠다드 오버핏 린넨 자켓",
+  "자라 와이드 데님 팬츠",
+  "유니클로 크루넥 가디건",
+]
 
 export const popularTags = [
-  "여름 원피스",
-  "린넨 셔츠",
-  "와이드 팬츠",
-  "가디건",
-  "크로스백",
-  "스니커즈",
+  "H&M 리넨 여름 원피스",
+  "유니클로 린넨 셔츠",
+  "무신사 스탠다드 와이드 팬츠",
+  "폴로 랄프로렌 가디건",
+  "코치 크로스바디백",
+  "나이키 에어포스1 스니커즈",
 ]
 
 export const defaultQuery = "리넨 오버핏 자켓"
