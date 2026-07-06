@@ -34,8 +34,8 @@ export default function ResultPage() {
         </p>
       </div>
 
-      <div className="flex flex-col gap-3 rounded-2xl bg-violet-50 p-5 dark:bg-violet-500/10">
-        <span className="text-xs font-semibold text-violet-500">Prism AI 한줄 결론</span>
+      <div className="flex flex-col gap-3 rounded-2xl bg-yellow-50 p-5 dark:bg-yellow-500/10">
+        <span className="text-xs font-semibold text-yellow-600 dark:text-yellow-400">Prism AI 한줄 결론</span>
         <StarRating rating={aiConclusion.rating} />
         <p className="text-sm leading-relaxed text-neutral-800 dark:text-neutral-200">{aiConclusion.summary}</p>
       </div>
@@ -58,7 +58,7 @@ export default function ResultPage() {
 
       <button
         onClick={() => navigate("/reviews", { state: { query } })}
-        className="mt-2 w-full rounded-full bg-neutral-900 py-3.5 text-sm font-semibold text-white dark:bg-neutral-100 dark:text-neutral-900"
+        className="mt-2 w-full rounded-full bg-yellow-400 py-3.5 text-sm font-semibold text-neutral-900"
       >
         리뷰 전체 보기
       </button>

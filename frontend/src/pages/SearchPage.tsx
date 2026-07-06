@@ -15,7 +15,7 @@ export default function SearchPage() {
 
   return (
     <div className="mx-auto flex min-h-svh max-w-md flex-col gap-8 px-5 py-10">
-      <h1 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">Prism</h1>
+      <h1 className="text-2xl font-bold text-yellow-500">Prism</h1>
 
       <form
         onSubmit={(e) => {
@@ -33,7 +33,7 @@ export default function SearchPage() {
         />
         <button
           type="submit"
-          className="shrink-0 rounded-full bg-neutral-900 px-3 py-1.5 text-xs font-medium text-white dark:bg-neutral-100 dark:text-neutral-900"
+          className="shrink-0 rounded-full bg-yellow-400 px-3 py-1.5 text-xs font-medium text-neutral-900"
         >
           검색
         </button>
@@ -85,7 +85,7 @@ export default function SearchPage() {
                 onClick={() => startSearch(term)}
                 className="flex w-full items-center gap-3 rounded-xl px-2 py-2 text-left hover:bg-neutral-50 dark:hover:bg-neutral-800"
               >
-                <span className="w-4 text-sm font-semibold text-violet-500">{i + 1}</span>
+                <span className="w-4 text-sm font-semibold text-yellow-500">{i + 1}</span>
                 <span className="text-sm text-neutral-800 dark:text-neutral-200">{term}</span>
               </button>
             </li>

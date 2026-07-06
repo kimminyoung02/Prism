@@ -58,7 +58,7 @@ export default function ReviewsPage() {
           </button>
         ))}
         <div
-          className="absolute bottom-0 h-0.5 bg-neutral-900 transition-transform duration-300 ease-out dark:bg-neutral-100"
+          className="absolute bottom-0 h-0.5 bg-yellow-400 transition-transform duration-300 ease-out"
           style={{ width: `${100 / TABS.length}%`, transform: `translateX(${activeTab * 100}%)` }}
         />
       </div>
@@ -86,7 +86,7 @@ export default function ReviewsPage() {
               <ul className="flex flex-col gap-2">
                 {cons.map((item) => (
                   <li key={item} className="flex items-start gap-2 text-sm text-neutral-700 dark:text-neutral-300">
-                    <AlertTriangle size={16} className="mt-0.5 shrink-0 text-amber-500" />
+                    <AlertTriangle size={16} className="mt-0.5 shrink-0 text-yellow-500" />
                     {item}
                   </li>
                 ))}

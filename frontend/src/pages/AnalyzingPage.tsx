@@ -34,8 +34,8 @@ export default function AnalyzingPage() {
           const state = i < currentStep ? "done" : i === currentStep ? "active" : "pending"
           return (
             <div key={label} className="flex items-center gap-3">
-              {state === "done" && <CheckCircle2 size={20} className="shrink-0 text-violet-500" />}
-              {state === "active" && <Loader2 size={20} className="shrink-0 animate-spin text-violet-500" />}
+              {state === "done" && <CheckCircle2 size={20} className="shrink-0 text-yellow-500" />}
+              {state === "active" && <Loader2 size={20} className="shrink-0 animate-spin text-yellow-500" />}
               {state === "pending" && <Circle size={20} className="shrink-0 text-neutral-300 dark:text-neutral-700" />}
               <span
                 className={
