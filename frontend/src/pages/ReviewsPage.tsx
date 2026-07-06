@@ -1,6 +1,6 @@
 import { useRef, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
-import { ArrowLeft, CheckCircle2, AlertTriangle } from "lucide-react"
+import { ArrowLeft, CheckCircle2, AlertTriangle, ExternalLink } from "lucide-react"
 import { cons, defaultQuery, keywords, pros, reviewsByChannel } from "../mock/data"
 
 const TABS = [
@@ -120,6 +120,15 @@ export default function ReviewsPage() {
                     {review.source} · {review.date}
                   </p>
                   <p className="text-xs text-neutral-400">{review.stat}</p>
+                  <a
+                    href={review.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-1 flex w-fit items-center gap-1 text-xs font-medium text-neutral-600 hover:underline dark:text-neutral-300"
+                  >
+                    원문 가기
+                    <ExternalLink size={12} />
+                  </a>
                 </div>
               ))}
             </div>
