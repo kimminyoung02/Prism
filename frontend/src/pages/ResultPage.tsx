@@ -16,7 +16,7 @@ export default function ResultPage() {
   const query = (location.state as { query?: string } | null)?.query ?? defaultQuery
 
   return (
-    <div className="mx-auto flex min-h-svh max-w-md flex-col gap-6 px-5 py-8">
+    <div className="mx-auto flex min-h-svh max-w-md flex-col gap-6 px-5 pb-24 pt-8">
       <div className="flex items-center justify-between">
         <button
           onClick={() => navigate("/")}
@@ -25,7 +25,16 @@ export default function ResultPage() {
           <ArrowLeft size={16} />
           다시 검색하기
         </button>
-        <ScrapButton size={22} />
+        <ScrapButton
+          size={22}
+          item={{
+            id: `product:${query}`,
+            type: "product",
+            title: query,
+            subtitle: `리뷰 ${totalReviewCount}개 · 분석일 ${analyzedDate}`,
+            query,
+          }}
+        />
       </div>
 
       <div className="flex flex-col items-center gap-3 text-center">

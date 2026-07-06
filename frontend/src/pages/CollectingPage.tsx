@@ -37,7 +37,7 @@ export default function CollectingPage() {
   }, [allDone, navigate, query])
 
   return (
-    <div className="mx-auto flex min-h-svh max-w-md flex-col justify-center gap-8 px-5 py-10">
+    <div className="mx-auto flex min-h-svh max-w-md flex-col justify-center gap-8 px-5 pb-24 pt-10">
       <div className="flex flex-col gap-2 text-center">
         <h1 className="text-lg font-bold text-neutral-900 dark:text-neutral-100">
           &lsquo;{query}&rsquo; 리뷰를 수집하고 있어요

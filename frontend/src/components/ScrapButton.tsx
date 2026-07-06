@@ -1,13 +1,16 @@
 import { useState } from "react"
 import { Bookmark } from "lucide-react"
+import { useScrap, type ScrapItem } from "../store/ScrapContext"
 
 interface ScrapButtonProps {
+  item: ScrapItem
   size?: number
   className?: string
 }
 
-export default function ScrapButton({ size = 20, className = "" }: ScrapButtonProps) {
-  const [scrapped, setScrapped] = useState(false)
+export default function ScrapButton({ item, size = 20, className = "" }: ScrapButtonProps) {
+  const { isScrapped, toggleScrap } = useScrap()
+  const scrapped = isScrapped(item.id)
   const [popping, setPopping] = useState(false)
 
   return (
@@ -18,7 +21,7 @@ export default function ScrapButton({ size = 20, className = "" }: ScrapButtonPr
       onClick={(e) => {
         e.preventDefault()
         e.stopPropagation()
-        setScrapped((s) => !s)
+        toggleScrap(item)
         setPopping(true)
       }}
       className={`inline-flex shrink-0 items-center justify-center ${className}`}

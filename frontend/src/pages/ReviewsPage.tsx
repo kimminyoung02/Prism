@@ -37,7 +37,7 @@ export default function ReviewsPage() {
   }
 
   return (
-    <div className="mx-auto flex min-h-svh max-w-md flex-col px-5 py-8">
+    <div className="mx-auto flex min-h-svh max-w-md flex-col px-5 pb-24 pt-8">
       <div className="mb-4 flex items-center gap-3">
         <button onClick={() => navigate(-1)} className="text-neutral-500 dark:text-neutral-400">
           <ArrowLeft size={20} />
@@ -118,7 +118,17 @@ export default function ReviewsPage() {
                 >
                   <div className="flex items-start justify-between gap-2">
                     <h3 className="text-sm font-medium text-neutral-900 dark:text-neutral-100">{review.title}</h3>
-                    <ScrapButton size={18} className="mt-0.5" />
+                    <ScrapButton
+                      size={18}
+                      className="mt-0.5"
+                      item={{
+                        id: review.id,
+                        type: "review",
+                        title: review.title,
+                        subtitle: `${review.source} · ${review.date}`,
+                        url: review.url,
+                      }}
+                    />
                   </div>
                   <p className="text-xs text-neutral-500 dark:text-neutral-400">
                     {review.source} · {review.date}

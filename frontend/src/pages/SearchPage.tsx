@@ -14,7 +14,7 @@ export default function SearchPage() {
   }
 
   return (
-    <div className="mx-auto flex min-h-svh max-w-md flex-col gap-8 px-5 py-10">
+    <div className="mx-auto flex min-h-svh max-w-md flex-col gap-8 px-5 pb-24 pt-10">
       <h1 className="text-2xl font-bold text-yellow-500">Prism</h1>
 
       <form
