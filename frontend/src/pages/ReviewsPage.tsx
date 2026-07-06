@@ -1,6 +1,7 @@
 import { useRef, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { ArrowLeft, CheckCircle2, AlertTriangle, ExternalLink } from "lucide-react"
+import ScrapButton from "../components/ScrapButton"
 import { cons, defaultQuery, keywords, pros, reviewsByChannel } from "../mock/data"
 
 const TABS = [
@@ -115,7 +116,10 @@ export default function ReviewsPage() {
                   key={review.id}
                   className="flex flex-col gap-1.5 rounded-2xl border border-neutral-200 p-4 dark:border-neutral-800"
                 >
-                  <h3 className="text-sm font-medium text-neutral-900 dark:text-neutral-100">{review.title}</h3>
+                  <div className="flex items-start justify-between gap-2">
+                    <h3 className="text-sm font-medium text-neutral-900 dark:text-neutral-100">{review.title}</h3>
+                    <ScrapButton size={18} className="mt-0.5" />
+                  </div>
                   <p className="text-xs text-neutral-500 dark:text-neutral-400">
                     {review.source} · {review.date}
                   </p>

@@ -1,5 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom"
 import { ArrowLeft, Shirt, Newspaper, Clapperboard, MessagesSquare } from "lucide-react"
+import ScrapButton from "../components/ScrapButton"
 import StarRating from "../components/StarRating"
 import { aiConclusion, analyzedDate, defaultQuery, reviewSources, totalReviewCount } from "../mock/data"
 
@@ -16,13 +17,16 @@ export default function ResultPage() {
 
   return (
     <div className="mx-auto flex min-h-svh max-w-md flex-col gap-6 px-5 py-8">
-      <button
-        onClick={() => navigate("/")}
-        className="flex w-fit items-center gap-1 text-sm text-neutral-500 dark:text-neutral-400"
-      >
-        <ArrowLeft size={16} />
-        다시 검색하기
-      </button>
+      <div className="flex items-center justify-between">
+        <button
+          onClick={() => navigate("/")}
+          className="flex w-fit items-center gap-1 text-sm text-neutral-500 dark:text-neutral-400"
+        >
+          <ArrowLeft size={16} />
+          다시 검색하기
+        </button>
+        <ScrapButton size={22} />
+      </div>
 
       <div className="flex flex-col items-center gap-3 text-center">
         <div className="flex h-28 w-28 items-center justify-center rounded-3xl bg-neutral-100 dark:bg-neutral-800">
