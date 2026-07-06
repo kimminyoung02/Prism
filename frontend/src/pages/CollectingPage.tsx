@@ -61,7 +61,14 @@ export default function CollectingPage() {
                   {current}/{channel.total}
                 </span>
               </div>
-              <div className="h-2 w-full overflow-hidden rounded-full bg-neutral-100 dark:bg-neutral-800">
+              <div
+                role="progressbar"
+                aria-label={channel.label}
+                aria-valuenow={current}
+                aria-valuemin={0}
+                aria-valuemax={channel.total}
+                className="h-2 w-full overflow-hidden rounded-full bg-neutral-100 dark:bg-neutral-800"
+              >
                 <div
                   className="h-full rounded-full bg-yellow-400 transition-all duration-200"
                   style={{ width: `${percent}%` }}

@@ -20,7 +20,7 @@ export default function ResultPage() {
       <div className="flex items-center justify-between">
         <button
           onClick={() => navigate("/")}
-          className="flex w-fit items-center gap-1 text-sm text-neutral-500 dark:text-neutral-400"
+          className="flex w-fit items-center gap-1 rounded-full py-1 text-sm text-neutral-500 transition-colors duration-150 hover:text-neutral-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 dark:text-neutral-400 dark:hover:text-neutral-200"
         >
           <ArrowLeft size={16} />
           다시 검색하기
@@ -71,7 +71,7 @@ export default function ResultPage() {
 
       <button
         onClick={() => navigate("/reviews", { state: { query } })}
-        className="mt-2 w-full rounded-full bg-yellow-400 py-3.5 text-sm font-semibold text-neutral-900"
+        className="mt-2 w-full rounded-full bg-yellow-400 py-3.5 text-sm font-semibold text-neutral-900 transition-colors duration-150 hover:bg-yellow-500 active:bg-yellow-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2"
       >
         리뷰 전체 보기
       </button>

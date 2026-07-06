@@ -39,32 +39,41 @@ export default function ReviewsPage() {
   return (
     <div className="mx-auto flex min-h-svh max-w-md flex-col px-5 pb-24 pt-8">
       <div className="mb-4 flex items-center gap-3">
-        <button onClick={() => navigate(-1)} className="text-neutral-500 dark:text-neutral-400">
+        <button
+          onClick={() => navigate(-1)}
+          aria-label="뒤로 가기"
+          className="rounded-full p-1 text-neutral-500 transition-colors duration-150 hover:text-neutral-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 dark:text-neutral-400 dark:hover:text-neutral-200"
+        >
           <ArrowLeft size={20} />
         </button>
         <h1 className="truncate text-base font-bold text-neutral-900 dark:text-neutral-100">{query} 리뷰</h1>
       </div>
 
-      <div className="relative mb-4 grid grid-cols-4 border-b border-neutral-200 dark:border-neutral-800">
+      <div role="tablist" aria-label="리뷰 카테고리" className="relative mb-4 grid grid-cols-4 border-b border-neutral-200 dark:border-neutral-800">
         {TABS.map((tab, i) => (
           <button
             key={tab.key}
+            role="tab"
+            aria-selected={i === activeTab}
             onClick={() => setActiveTab(i)}
             className={
-              "py-2.5 text-center text-xs font-medium " +
-              (i === activeTab ? "text-neutral-900 dark:text-neutral-100" : "text-neutral-400")
+              "py-2.5 text-center text-xs font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 " +
+              (i === activeTab
+                ? "text-neutral-900 dark:text-neutral-100"
+                : "text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300")
             }
           >
             {tab.label}
           </button>
         ))}
         <div
+          aria-hidden="true"
           className="absolute bottom-0 h-0.5 bg-yellow-400 transition-transform duration-300 ease-out"
           style={{ width: `${100 / TABS.length}%`, transform: `translateX(${activeTab * 100}%)` }}
         />
       </div>
 
-      <div className="overflow-hidden" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+      <div role="tabpanel" className="overflow-hidden" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
         <div
           className="flex transition-transform duration-300 ease-out"
           style={{ width: `${TABS.length * 100}%`, transform: `translateX(-${activeTab * (100 / TABS.length)}%)` }}
@@ -138,7 +147,7 @@ export default function ReviewsPage() {
                     href={review.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-1 flex w-fit items-center gap-1 text-xs font-medium text-neutral-600 hover:underline dark:text-neutral-300"
+                    className="mt-1 flex w-fit items-center gap-1 rounded text-xs font-medium text-neutral-600 transition-colors duration-150 hover:text-neutral-900 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 dark:text-neutral-300 dark:hover:text-neutral-100"
                   >
                     원문 가기
                     <ExternalLink size={12} />
