@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { Search, ScanLine, Sparkles } from "lucide-react"
+import { Search, Camera } from "lucide-react"
 import { recentSearches, popularTags } from "../mock/data"
 
 export default function SearchPage() {
@@ -32,34 +32,20 @@ export default function SearchPage() {
           className="w-full bg-transparent text-sm text-neutral-900 outline-none placeholder:text-neutral-400 dark:text-neutral-100"
         />
         <button
+          type="button"
+          disabled
+          title="스마트 렌즈 · Prism Lens (준비중)"
+          className="shrink-0 cursor-not-allowed rounded-full p-1.5 text-neutral-300 dark:text-neutral-600"
+        >
+          <Camera size={20} />
+        </button>
+        <button
           type="submit"
           className="shrink-0 rounded-full bg-yellow-400 px-3 py-1.5 text-xs font-medium text-neutral-900"
         >
           검색
         </button>
       </form>
-
-      <div className="flex gap-3">
-        <button
-          type="button"
-          disabled
-          className="flex flex-1 cursor-not-allowed flex-col items-center gap-1.5 rounded-2xl border border-neutral-200 bg-neutral-50 py-4 text-neutral-400 dark:border-neutral-800 dark:bg-neutral-900"
-        >
-          <ScanLine size={22} />
-          <span className="text-xs font-medium">스마트 렌즈</span>
-        </button>
-        <button
-          type="button"
-          disabled
-          className="relative flex flex-1 cursor-not-allowed flex-col items-center gap-1.5 rounded-2xl border border-neutral-200 bg-neutral-50 py-4 text-neutral-400 dark:border-neutral-800 dark:bg-neutral-900"
-        >
-          <span className="absolute -top-2 right-3 rounded-full bg-neutral-200 px-2 py-0.5 text-[10px] font-medium text-neutral-500 dark:bg-neutral-700 dark:text-neutral-300">
-            준비중
-          </span>
-          <Sparkles size={22} />
-          <span className="text-xs font-medium">Prism Lens</span>
-        </button>
-      </div>
 
       <section className="flex flex-col gap-3">
         <h2 className="text-sm font-semibold text-neutral-500 dark:text-neutral-400">최근 검색</h2>
