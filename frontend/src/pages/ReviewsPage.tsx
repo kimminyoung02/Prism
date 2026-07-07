@@ -13,6 +13,14 @@ const TABS = [
 
 const SWIPE_THRESHOLD = 50
 
+function openOriginalLink(url: string) {
+  const width = window.innerWidth
+  const height = window.innerHeight
+  const left = window.screenX + (window.outerWidth - width) / 2
+  const top = window.screenY + (window.outerHeight - height)
+  window.open(url, "_blank", `noopener,noreferrer,width=${width},height=${height},left=${left},top=${top}`)
+}
+
 export default function ReviewsPage() {
   const navigate = useNavigate()
   const location = useLocation()
@@ -143,15 +151,14 @@ export default function ReviewsPage() {
                     {review.source} · {review.date}
                   </p>
                   <p className="text-xs text-neutral-400">{review.stat}</p>
-                  <a
-                    href={review.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <button
+                    type="button"
+                    onClick={() => openOriginalLink(review.url)}
                     className="mt-1 flex w-fit items-center gap-1 rounded text-xs font-medium text-neutral-600 transition-colors duration-150 hover:text-neutral-900 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 dark:text-neutral-300 dark:hover:text-neutral-100"
                   >
                     원문 가기
                     <ExternalLink size={12} />
-                  </a>
+                  </button>
                 </div>
               ))}
             </div>
