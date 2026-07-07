@@ -6,17 +6,20 @@ import App from './App.tsx'
 import { ScrapProvider } from './store/ScrapContext.tsx'
 import { AuthProvider } from './store/AuthContext.tsx'
 import { ProfileProvider } from './store/ProfileContext.tsx'
+import { ThemeProvider } from './store/ThemeContext.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
-      <AuthProvider>
-        <ProfileProvider>
-          <ScrapProvider>
-            <App />
-          </ScrapProvider>
-        </ProfileProvider>
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <ProfileProvider>
+            <ScrapProvider>
+              <App />
+            </ScrapProvider>
+          </ProfileProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </BrowserRouter>
   </StrictMode>,
 )

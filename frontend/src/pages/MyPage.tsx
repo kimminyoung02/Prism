@@ -1,108 +1,91 @@
 import { useNavigate } from "react-router-dom"
-import { User, Pencil, UserPen, KeyRound, LogOut, Search } from "lucide-react"
+import { User, Bell, ClipboardList, Heart, History, Settings, LogOut, ChevronRight } from "lucide-react"
 import { useAuth } from "../store/AuthContext"
+import { useScrap } from "../store/ScrapContext"
 import { AVATAR_STYLES, useProfile } from "../store/ProfileContext"
-import { recentSearches } from "../mock/data"
+import { myReviews, recentlyViewed } from "../mock/data"
 
 export default function MyPage() {
   const navigate = useNavigate()
   const { logout } = useAuth()
   const { profile } = useProfile()
+  const { items } = useScrap()
   const avatar = AVATAR_STYLES[profile.avatarIndex]
 
-  const startSearch = (q: string) => {
-    navigate("/collecting", { state: { query: q } })
-  }
+  const stats = [
+    { label: "리뷰 분석", value: myReviews.length > 0 ? 77 : 0 },
+    { label: "찜한 제품", value: items.length },
+    { label: "최근 본 제품", value: recentlyViewed.length > 0 ? 8 : 0 },
+  ]
+
+  const menu = [
+    { icon: ClipboardList, label: "나의 리뷰 기록", to: "/my/reviews" },
+    { icon: Heart, label: "찜한 제품", to: "/favorites" },
+    { icon: History, label: "최근 본 제품", to: "/my/recent" },
+    { icon: Bell, label: "알림", to: "/my/notifications" },
+    { icon: Settings, label: "설정", to: "/my/settings" },
+  ]
 
   return (
     <div className="mx-auto flex min-h-svh max-w-md flex-col gap-8 px-5 pb-24 pt-8">
-      <h1 className="text-lg font-bold text-neutral-900 dark:text-neutral-100">마이</h1>
-
-      <section className="flex items-center gap-4">
-        <div className="relative shrink-0">
-          <div className={`flex h-16 w-16 items-center justify-center rounded-full ${avatar.bg}`}>
-            <User size={28} className={avatar.fg} />
-          </div>
-          <button
-            type="button"
-            onClick={() => navigate("/edit-profile")}
-            aria-label="회원정보 수정"
-            className="absolute -bottom-0.5 -right-0.5 flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-neutral-200 text-neutral-500 transition-colors duration-150 hover:bg-neutral-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 dark:border-neutral-950 dark:bg-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-600"
-          >
-            <Pencil size={12} />
-          </button>
+      <section className="relative flex items-center gap-4">
+        <div className={`flex h-16 w-16 shrink-0 items-center justify-center rounded-full ${avatar.bg}`}>
+          <User size={28} className={avatar.fg} />
         </div>
         <div>
           <p className="text-base font-semibold text-neutral-900 dark:text-neutral-100">{profile.nickname}</p>
           <p className="text-sm text-neutral-500 dark:text-neutral-400">{profile.email}</p>
         </div>
-      </section>
-
-      <section className="flex flex-col gap-3">
-        <h2 className="text-sm font-semibold text-neutral-500 dark:text-neutral-400">계정</h2>
-        <ul className="flex flex-col overflow-hidden rounded-2xl border border-neutral-200 dark:border-neutral-800">
-          <li>
-            <button
-              type="button"
-              onClick={() => navigate("/edit-profile")}
-              className="flex w-full items-center gap-3 border-b border-neutral-200 px-4 py-3.5 text-left transition-colors duration-150 hover:bg-neutral-50 active:bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 dark:border-neutral-800 dark:hover:bg-neutral-800 dark:active:bg-neutral-700"
-            >
-              <UserPen size={18} className="shrink-0 text-neutral-400" />
-              <span className="flex-1 text-sm text-neutral-700 dark:text-neutral-300">회원정보 수정</span>
-            </button>
-          </li>
-          <li>
-            <button
-              type="button"
-              disabled
-              title="준비중"
-              className="flex w-full cursor-not-allowed items-center gap-3 border-b border-neutral-200 px-4 py-3.5 text-left disabled:opacity-60 dark:border-neutral-800"
-            >
-              <KeyRound size={18} className="shrink-0 text-neutral-400" />
-              <span className="flex-1 text-sm text-neutral-700 dark:text-neutral-300">비밀번호 변경</span>
-              <span className="text-xs text-neutral-400">준비중</span>
-            </button>
-          </li>
-          <li>
-            <button
-              type="button"
-              onClick={logout}
-              className="flex w-full items-center gap-3 px-4 py-3.5 text-left transition-colors duration-150 hover:bg-neutral-50 active:bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 dark:hover:bg-neutral-800 dark:active:bg-neutral-700"
-            >
-              <LogOut size={18} className="shrink-0 text-neutral-400" />
-              <span className="flex-1 text-sm text-neutral-700 dark:text-neutral-300">로그아웃</span>
-            </button>
-          </li>
-        </ul>
         <button
           type="button"
-          disabled
-          title="준비중"
-          className="w-fit cursor-not-allowed px-1 text-xs text-neutral-300 disabled:opacity-80 dark:text-neutral-700"
+          onClick={() => navigate("/my/notifications")}
+          aria-label="알림"
+          className="absolute right-0 top-0 rounded-full p-1.5 text-neutral-400 transition-colors duration-150 hover:text-neutral-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 dark:hover:text-neutral-200"
         >
-          회원 탈퇴
+          <Bell size={20} />
         </button>
       </section>
 
-      <section className="flex flex-col gap-3">
-        <h2 className="text-sm font-semibold text-neutral-500 dark:text-neutral-400">검색 기록</h2>
-        {recentSearches.length === 0 ? (
-          <p className="text-sm text-neutral-400">검색한 제품이 없어요</p>
-        ) : (
-          <ul className="flex flex-col">
-            {recentSearches.map((term) => (
-              <li key={term}>
-                <button
-                  onClick={() => startSearch(term)}
-                  className="flex w-full items-center gap-3 rounded-xl px-2 py-2.5 text-left transition-colors duration-150 hover:bg-neutral-50 active:bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 dark:hover:bg-neutral-800 dark:active:bg-neutral-700"
-                >
-                  <Search size={16} className="shrink-0 text-neutral-400" />
-                  <span className="text-sm text-neutral-800 dark:text-neutral-200">{term}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
+      <section className="grid grid-cols-3 gap-3">
+        {stats.map((stat) => (
+          <div
+            key={stat.label}
+            className="flex flex-col items-center gap-1 rounded-2xl border border-neutral-200 py-4 dark:border-neutral-800"
+          >
+            <span className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">{stat.value}</span>
+            <span className="text-xs text-neutral-500 dark:text-neutral-400">{stat.label}</span>
+          </div>
+        ))}
+      </section>
+
+      <section>
+        <ul className="flex flex-col overflow-hidden rounded-2xl border border-neutral-200 dark:border-neutral-800">
+          {menu.map(({ icon: Icon, label, to }, i) => (
+            <li key={label}>
+              <button
+                type="button"
+                onClick={() => navigate(to)}
+                className={
+                  "flex w-full items-center gap-3 px-4 py-3.5 text-left transition-colors duration-150 hover:bg-neutral-50 active:bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 dark:hover:bg-neutral-800 dark:active:bg-neutral-700" +
+                  (i < menu.length - 1 ? " border-b border-neutral-200 dark:border-neutral-800" : "")
+                }
+              >
+                <Icon size={18} className="shrink-0 text-neutral-400" />
+                <span className="flex-1 text-sm text-neutral-700 dark:text-neutral-300">{label}</span>
+                <ChevronRight size={16} className="shrink-0 text-neutral-300 dark:text-neutral-600" />
+              </button>
+            </li>
+          ))}
+        </ul>
+
+        <button
+          type="button"
+          onClick={logout}
+          className="mt-3 flex w-full items-center gap-3 rounded-2xl border-t border-neutral-100 px-4 py-3 text-left transition-colors duration-150 hover:bg-neutral-50 active:bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 dark:border-neutral-900 dark:hover:bg-neutral-800 dark:active:bg-neutral-700"
+        >
+          <LogOut size={18} className="shrink-0 text-neutral-300 dark:text-neutral-600" />
+          <span className="text-sm text-neutral-400 dark:text-neutral-500">로그아웃</span>
+        </button>
       </section>
     </div>
   )

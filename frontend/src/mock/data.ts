@@ -25,6 +25,28 @@ export interface ReviewItem {
   url: string
 }
 
+export interface MyListItem {
+  id: string
+  title: string
+  date: string
+  rating: number
+}
+
+export const myReviews: MyListItem[] = [
+  { id: "mr1", title: "리넨 오버핏 자켓", date: "2026.07.06", rating: 4.5 },
+  { id: "mr2", title: "와이드 데님 팬츠", date: "2026.06.29", rating: 4 },
+  { id: "mr3", title: "니트 가디건", date: "2026.06.18", rating: 3.5 },
+  { id: "mr4", title: "린넨 셔츠", date: "2026.06.05", rating: 4.5 },
+  { id: "mr5", title: "크로스바디백", date: "2026.05.27", rating: 4 },
+]
+
+export const recentlyViewed: MyListItem[] = [
+  { id: "rv1", title: "여름 원피스", date: "2026.07.05", rating: 4 },
+  { id: "rv2", title: "와이드 팬츠", date: "2026.07.03", rating: 3.5 },
+  { id: "rv3", title: "스니커즈", date: "2026.06.30", rating: 4.5 },
+  { id: "rv4", title: "가디건", date: "2026.06.22", rating: 4 },
+]
+
 export const recentSearches = [
   "무신사 스탠다드 오버핏 린넨 자켓",
   "자라 와이드 데님 팬츠",
