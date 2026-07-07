@@ -6,7 +6,7 @@ import AnalyzingPage from "./pages/AnalyzingPage"
 import ResultPage from "./pages/ResultPage"
 import ReviewsPage from "./pages/ReviewsPage"
 import FavoritesPage from "./pages/FavoritesPage"
-import MyPage from "./pages/MyPage"
+import MyTab from "./pages/MyTab"
 
 function App() {
   return (
@@ -18,7 +18,7 @@ function App() {
         <Route path="/result" element={<ResultPage />} />
         <Route path="/reviews" element={<ReviewsPage />} />
         <Route path="/favorites" element={<FavoritesPage />} />
-        <Route path="/my" element={<MyPage />} />
+        <Route path="/my" element={<MyTab />} />
       </Route>
     </Routes>
   )
