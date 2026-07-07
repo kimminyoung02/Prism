@@ -30,15 +30,72 @@ export interface MyListItem {
   title: string
   date: string
   rating: number
+  reviewCount?: number
+  aiComment?: string
 }
 
 export const myReviews: MyListItem[] = [
-  { id: "mr1", title: "리넨 오버핏 자켓", date: "2026.07.06", rating: 4.5 },
-  { id: "mr2", title: "와이드 데님 팬츠", date: "2026.06.29", rating: 4 },
-  { id: "mr3", title: "니트 가디건", date: "2026.06.18", rating: 3.5 },
-  { id: "mr4", title: "린넨 셔츠", date: "2026.06.05", rating: 4.5 },
-  { id: "mr5", title: "크로스바디백", date: "2026.05.27", rating: 4 },
+  {
+    id: "mr1",
+    title: "리넨 오버핏 자켓",
+    date: "2026.07.06",
+    rating: 4.5,
+    reviewCount: 89,
+    aiComment: "가볍고 시원한 착용감에 만족도가 높은 편이에요",
+  },
+  {
+    id: "mr2",
+    title: "와이드 데님 팬츠",
+    date: "2026.06.29",
+    rating: 4,
+    reviewCount: 62,
+    aiComment: "핏이 예쁘다는 의견이 많지만 기장은 수선이 필요할 수 있어요",
+  },
+  {
+    id: "mr3",
+    title: "니트 가디건",
+    date: "2026.06.18",
+    rating: 3.5,
+    reviewCount: 45,
+    aiComment: "가성비가 좋다는 의견이 많아요",
+  },
+  {
+    id: "mr4",
+    title: "린넨 셔츠",
+    date: "2026.06.05",
+    rating: 4.5,
+    reviewCount: 71,
+    aiComment: "구김이 잘 가지만 소재감이 좋다는 의견이 많아요",
+  },
+  {
+    id: "mr5",
+    title: "크로스바디백",
+    date: "2026.05.27",
+    rating: 4,
+    reviewCount: 38,
+    aiComment: "데일리로 활용하기 좋다는 의견이 많아요",
+  },
 ]
+
+export interface PopularSearchTerm {
+  term: string
+  change: "up" | "down" | "same"
+  diff?: number
+}
+
+export const popularSearchTerms: PopularSearchTerm[] = [
+  { term: "H&M 리넨 여름 원피스", change: "up", diff: 2 },
+  { term: "유니클로 린넨 셔츠", change: "same" },
+  { term: "무신사 스탠다드 와이드 팬츠", change: "up", diff: 1 },
+  { term: "폴로 랄프로렌 가디건", change: "down", diff: 3 },
+  { term: "코치 크로스바디백", change: "up", diff: 4 },
+  { term: "나이키 에어포스1 스니커즈", change: "down", diff: 1 },
+]
+
+export const todaysPick = {
+  title: "리넨 오버핏 자켓",
+  subtitle: "이번 주 가장 많이 분석된 제품이에요",
+}
 
 export const recentlyViewed: MyListItem[] = [
   { id: "rv1", title: "여름 원피스", date: "2026.07.05", rating: 4 },
@@ -51,15 +108,6 @@ export const recentSearches = [
   "무신사 스탠다드 오버핏 린넨 자켓",
   "자라 와이드 데님 팬츠",
   "유니클로 크루넥 가디건",
-]
-
-export const popularTags = [
-  "H&M 리넨 여름 원피스",
-  "유니클로 린넨 셔츠",
-  "무신사 스탠다드 와이드 팬츠",
-  "폴로 랄프로렌 가디건",
-  "코치 크로스바디백",
-  "나이키 에어포스1 스니커즈",
 ]
 
 export const defaultQuery = "리넨 오버핏 자켓"
