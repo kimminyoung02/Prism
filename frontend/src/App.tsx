@@ -12,6 +12,7 @@ import ProductHistoryPage from "./pages/ProductHistoryPage"
 import NotificationSettingsPage from "./pages/NotificationSettingsPage"
 import SettingsPage from "./pages/SettingsPage"
 import SearchTermsListPage from "./pages/SearchTermsListPage"
+import SignupPage from "./pages/SignupPage"
 import { myReviews, recentlyViewed } from "./mock/data"
 
 function App() {
@@ -38,6 +39,7 @@ function App() {
         <Route path="/my/settings" element={<SettingsPage />} />
         <Route path="/search-terms/recent" element={<SearchTermsListPage variant="recent" />} />
         <Route path="/search-terms/popular" element={<SearchTermsListPage variant="popular" />} />
+        <Route path="/signup" element={<SignupPage />} />
       </Route>
     </Routes>
   )

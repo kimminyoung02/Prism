@@ -1,9 +1,13 @@
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { MessageCircle } from "lucide-react"
 import { useAuth } from "../store/AuthContext"
+import { useProfile } from "../store/ProfileContext"
 
 export default function LoginPage() {
+  const navigate = useNavigate()
   const { login } = useAuth()
+  const { profile, updateProfile } = useProfile()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
 
@@ -14,7 +18,11 @@ export default function LoginPage() {
       <form
         onSubmit={(e) => {
           e.preventDefault()
+          if (email.trim()) {
+            updateProfile({ ...profile, email: email.trim() })
+          }
           login()
+          navigate("/my")
         }}
         className="flex flex-col gap-3"
       >
@@ -46,6 +54,7 @@ export default function LoginPage() {
         계정이 없으신가요?{" "}
         <button
           type="button"
+          onClick={() => navigate("/signup")}
           className="font-semibold text-yellow-600 hover:underline dark:text-yellow-400"
         >
           회원가입
@@ -61,7 +70,10 @@ export default function LoginPage() {
       <div className="flex flex-col gap-2.5">
         <button
           type="button"
-          onClick={login}
+          onClick={() => {
+            login()
+            navigate("/my")
+          }}
           className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#FEE500] py-3 text-sm font-medium text-neutral-900 transition-opacity duration-150 hover:opacity-90 active:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2"
         >
           <MessageCircle size={18} fill="currentColor" className="text-neutral-900" />
@@ -69,7 +81,10 @@ export default function LoginPage() {
         </button>
         <button
           type="button"
-          onClick={login}
+          onClick={() => {
+            login()
+            navigate("/my")
+          }}
           className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#03C75A] py-3 text-sm font-medium text-white transition-opacity duration-150 hover:opacity-90 active:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2"
         >
           <span className="flex h-[18px] w-[18px] items-center justify-center text-[13px] font-bold leading-none">N</span>
@@ -77,7 +92,10 @@ export default function LoginPage() {
         </button>
         <button
           type="button"
-          onClick={login}
+          onClick={() => {
+            login()
+            navigate("/my")
+          }}
           className="flex w-full items-center justify-center gap-2 rounded-xl border border-neutral-200 bg-white py-3 text-sm font-medium text-neutral-700 transition-colors duration-150 hover:bg-neutral-50 active:bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800"
         >
           <span className="flex h-[18px] w-[18px] items-center justify-center text-[13px] font-bold leading-none text-neutral-500">
