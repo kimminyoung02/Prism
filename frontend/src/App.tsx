@@ -7,6 +7,7 @@ import ResultPage from "./pages/ResultPage"
 import ReviewsPage from "./pages/ReviewsPage"
 import FavoritesPage from "./pages/FavoritesPage"
 import MyTab from "./pages/MyTab"
+import EditProfilePage from "./pages/EditProfilePage"
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/reviews" element={<ReviewsPage />} />
         <Route path="/favorites" element={<FavoritesPage />} />
         <Route path="/my" element={<MyTab />} />
+        <Route path="/edit-profile" element={<EditProfilePage />} />
       </Route>
     </Routes>
   )

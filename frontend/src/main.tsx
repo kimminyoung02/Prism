@@ -5,14 +5,17 @@ import './index.css'
 import App from './App.tsx'
 import { ScrapProvider } from './store/ScrapContext.tsx'
 import { AuthProvider } from './store/AuthContext.tsx'
+import { ProfileProvider } from './store/ProfileContext.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
       <AuthProvider>
-        <ScrapProvider>
-          <App />
-        </ScrapProvider>
+        <ProfileProvider>
+          <ScrapProvider>
+            <App />
+          </ScrapProvider>
+        </ProfileProvider>
       </AuthProvider>
     </BrowserRouter>
   </StrictMode>,

@@ -1,11 +1,14 @@
 import { useNavigate } from "react-router-dom"
-import { User, Pencil, KeyRound, LogOut, Search } from "lucide-react"
+import { User, Pencil, UserPen, KeyRound, LogOut, Search } from "lucide-react"
 import { useAuth } from "../store/AuthContext"
+import { AVATAR_STYLES, useProfile } from "../store/ProfileContext"
 import { recentSearches } from "../mock/data"
 
 export default function MyPage() {
   const navigate = useNavigate()
   const { logout } = useAuth()
+  const { profile } = useProfile()
+  const avatar = AVATAR_STYLES[profile.avatarIndex]
 
   const startSearch = (q: string) => {
     navigate("/collecting", { state: { query: q } })
@@ -17,27 +20,37 @@ export default function MyPage() {
 
       <section className="flex items-center gap-4">
         <div className="relative shrink-0">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-yellow-50 dark:bg-yellow-500/10">
-            <User size={28} className="text-yellow-500" />
+          <div className={`flex h-16 w-16 items-center justify-center rounded-full ${avatar.bg}`}>
+            <User size={28} className={avatar.fg} />
           </div>
           <button
             type="button"
-            disabled
-            title="준비중"
-            className="absolute -bottom-0.5 -right-0.5 flex h-6 w-6 cursor-not-allowed items-center justify-center rounded-full border-2 border-white bg-neutral-200 text-neutral-500 disabled:opacity-80 dark:border-neutral-950 dark:bg-neutral-700 dark:text-neutral-300"
+            onClick={() => navigate("/edit-profile")}
+            aria-label="회원정보 수정"
+            className="absolute -bottom-0.5 -right-0.5 flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-neutral-200 text-neutral-500 transition-colors duration-150 hover:bg-neutral-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 dark:border-neutral-950 dark:bg-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-600"
           >
             <Pencil size={12} />
           </button>
         </div>
         <div>
-          <p className="text-base font-semibold text-neutral-900 dark:text-neutral-100">prism_user</p>
-          <p className="text-sm text-neutral-500 dark:text-neutral-400">user@example.com</p>
+          <p className="text-base font-semibold text-neutral-900 dark:text-neutral-100">{profile.nickname}</p>
+          <p className="text-sm text-neutral-500 dark:text-neutral-400">{profile.email}</p>
         </div>
       </section>
 
       <section className="flex flex-col gap-3">
         <h2 className="text-sm font-semibold text-neutral-500 dark:text-neutral-400">계정</h2>
         <ul className="flex flex-col overflow-hidden rounded-2xl border border-neutral-200 dark:border-neutral-800">
+          <li>
+            <button
+              type="button"
+              onClick={() => navigate("/edit-profile")}
+              className="flex w-full items-center gap-3 border-b border-neutral-200 px-4 py-3.5 text-left transition-colors duration-150 hover:bg-neutral-50 active:bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 dark:border-neutral-800 dark:hover:bg-neutral-800 dark:active:bg-neutral-700"
+            >
+              <UserPen size={18} className="shrink-0 text-neutral-400" />
+              <span className="flex-1 text-sm text-neutral-700 dark:text-neutral-300">회원정보 수정</span>
+            </button>
+          </li>
           <li>
             <button
               type="button"
