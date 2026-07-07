@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom"
-import { User, Bell, ClipboardList, Heart, History, Settings, LogOut, ChevronRight } from "lucide-react"
+import { User, Bell, Heart, History, Settings, LogOut, ChevronRight } from "lucide-react"
 import { useAuth } from "../store/AuthContext"
 import { useScrap } from "../store/ScrapContext"
 import { AVATAR_STYLES, useProfile } from "../store/ProfileContext"
@@ -19,7 +19,6 @@ export default function MyPage() {
   ]
 
   const menu = [
-    { icon: ClipboardList, label: "나의 리뷰 기록", to: "/my/reviews" },
     { icon: Heart, label: "찜한 제품", to: "/favorites" },
     { icon: History, label: "최근 본 제품", to: "/my/recent" },
     { icon: Bell, label: "알림", to: "/my/notifications" },

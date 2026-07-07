@@ -4,7 +4,7 @@ import { ArrowLeft } from "lucide-react"
 import ToggleSwitch from "../components/ToggleSwitch"
 
 const INITIAL_TOGGLES = [
-  { key: "mute", label: "무시 알림" },
+  { key: "push", label: "푸시 알림" },
   { key: "analysisDone", label: "분석완료 알림" },
   { key: "recommend", label: "추천제품 알림" },
 ]
@@ -12,7 +12,7 @@ const INITIAL_TOGGLES = [
 export default function NotificationSettingsPage() {
   const navigate = useNavigate()
   const [toggles, setToggles] = useState<Record<string, boolean>>({
-    mute: false,
+    push: true,
     analysisDone: true,
     recommend: true,
   })
