@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { ArrowLeft, Share2, Eye } from "lucide-react"
 import { useCommunity, CATEGORY_STYLES } from "../store/CommunityContext"
-import { useEngagement } from "../store/EngagementContext"
 import EngagementBar from "../components/EngagementBar"
 import CommentsPanel from "../components/CommentsPanel"
 import ShareModal from "../components/ShareModal"
@@ -13,16 +12,10 @@ export default function CommunityPostDetailPage() {
   const location = useLocation()
   const postId = (location.state as { postId?: string } | null)?.postId
   const { getPost, viewCounts, recordView } = useCommunity()
-  const { ensureSeed } = useEngagement()
   const [shareOpen, setShareOpen] = useState(false)
   const viewedRef = useRef<string | null>(null)
 
   const post = postId ? getPost(postId) : undefined
-
-  useEffect(() => {
-    if (post) ensureSeed(post.id, post.seedLikes, post.seedDislikes)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [post?.id])
 
   useEffect(() => {
     if (!post || viewedRef.current === post.id) return
@@ -92,16 +85,11 @@ export default function CommunityPostDetailPage() {
           </span>
         </div>
         <p className="whitespace-pre-wrap text-sm leading-relaxed text-neutral-700 dark:text-neutral-300">{post.content}</p>
+        {post.imageUrl && <img src={post.imageUrl} alt="" className="w-full rounded-2xl object-cover" />}
       </div>
 
       <div className="flex flex-col gap-4 rounded-2xl bg-white p-4 dark:border dark:border-white/10 dark:bg-[#1A2E3D]">
-        <EngagementBar
-          id={post.id}
-          seedLikes={post.seedLikes}
-          seedDislikes={post.seedDislikes}
-          commentsOpen
-          onToggleComments={() => {}}
-        />
+        <EngagementBar id={post.id} targetType="post" commentsOpen onToggleComments={() => {}} />
         <CommentsPanel id={post.id} targetType="post" />
       </div>
 

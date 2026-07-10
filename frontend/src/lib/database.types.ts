@@ -44,6 +44,7 @@ export interface PostRow {
   title: string
   content: string
   view_count: number
+  image_url: string | null
   created_at: string
 }
 
@@ -57,5 +58,17 @@ export interface CommentRow {
   content: string
   parent_comment_id: string | null
   reply_to_author: string | null
+  created_at: string
+}
+
+export type VoteTargetType = "post" | "review" | "comment"
+export type VoteType = "like" | "dislike"
+
+export interface LikeRow {
+  id: string
+  user_id: string
+  target_type: VoteTargetType
+  target_id: string
+  vote_type: VoteType
   created_at: string
 }

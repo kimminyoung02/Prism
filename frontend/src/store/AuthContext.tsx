@@ -7,12 +7,15 @@ interface AuthResult {
   needsEmailConfirm?: boolean
 }
 
+export type OAuthProvider = "google" | "kakao"
+
 interface AuthContextValue {
   isLoggedIn: boolean
   user: User | null
   loading: boolean
   signUp: (email: string, password: string, nickname: string) => Promise<AuthResult>
   signIn: (email: string, password: string) => Promise<AuthResult>
+  signInWithOAuth: (provider: OAuthProvider) => Promise<AuthResult>
   logout: () => Promise<void>
 }
 
@@ -23,6 +26,7 @@ function translateAuthError(message: string): string {
   if (message.includes("User already registered")) return "이미 가입된 이메일이에요"
   if (message.includes("Password should be at least")) return "비밀번호는 6자 이상이어야 해요"
   if (message.includes("Unable to validate email address")) return "이메일 형식이 올바르지 않아요"
+  if (message.toLowerCase().includes("provider is not enabled")) return "아직 Supabase에 이 로그인 방식이 설정되지 않았어요"
   return message
 }
 
@@ -70,6 +74,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error: null }
   }
 
+  const signInWithOAuth = async (provider: OAuthProvider): Promise<AuthResult> => {
+    if (!isSupabaseConfigured) return { error: "Supabase 연결 설정이 필요해요" }
+
+    // 성공 시 Supabase가 이 주소로 세션을 담아 돌려보냄(전체 페이지 리다이렉트)
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider,
+      options: { redirectTo: `${window.location.origin}/my` },
+    })
+    if (error) return { error: translateAuthError(error.message) }
+    return { error: null }
+  }
+
   const logout = async () => {
     if (!isSupabaseConfigured) return
     await supabase.auth.signOut()
@@ -83,6 +99,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         loading,
         signUp,
         signIn,
+        signInWithOAuth,
         logout,
       }}
     >

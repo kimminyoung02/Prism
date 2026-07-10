@@ -1,23 +1,24 @@
 import { useEffect } from "react"
 import { ThumbsUp, ThumbsDown, MessageCircle } from "lucide-react"
 import { useEngagement } from "../store/EngagementContext"
+import type { CommentTargetType } from "../lib/database.types"
 
 interface EngagementBarProps {
   id: string
-  seedLikes?: number
-  seedDislikes?: number
+  targetType: CommentTargetType
   commentsOpen: boolean
   onToggleComments: () => void
   showDislike?: boolean
 }
 
-export default function EngagementBar({ id, seedLikes = 0, seedDislikes = 0, commentsOpen, onToggleComments, showDislike = true }: EngagementBarProps) {
-  const { getRecord, ensureSeed, vote } = useEngagement()
+export default function EngagementBar({ id, targetType, commentsOpen, onToggleComments, showDislike = true }: EngagementBarProps) {
+  const { getRecord, loadVotes, loadComments, vote } = useEngagement()
 
   useEffect(() => {
-    ensureSeed(id, seedLikes, seedDislikes)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id])
+    loadVotes(targetType, id)
+    // 댓글 카드/버튼에 개수를 정확히 보여주려면 펼치기 전에도 미리 불러와둬야 함
+    loadComments(targetType, id)
+  }, [targetType, id, loadVotes, loadComments])
 
   const record = getRecord(id)
 
@@ -25,7 +26,7 @@ export default function EngagementBar({ id, seedLikes = 0, seedDislikes = 0, com
     <div className="flex items-center gap-4">
       <button
         type="button"
-        onClick={() => vote(id, "like")}
+        onClick={() => vote(targetType, id, "like")}
         aria-pressed={record.myVote === "like"}
         aria-label="도움돼요"
         className={
@@ -41,7 +42,7 @@ export default function EngagementBar({ id, seedLikes = 0, seedDislikes = 0, com
       {showDislike && (
         <button
           type="button"
-          onClick={() => vote(id, "dislike")}
+          onClick={() => vote(targetType, id, "dislike")}
           aria-pressed={record.myVote === "dislike"}
           aria-label="별로예요"
           className={

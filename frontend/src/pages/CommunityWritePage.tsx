@@ -1,10 +1,13 @@
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { X, Image, Link2 } from "lucide-react"
 import { useCommunity, POST_CATEGORIES, CATEGORY_STYLES, type PostCategory } from "../store/CommunityContext"
+import { useAuth } from "../store/AuthContext"
+import { uploadImage } from "../lib/uploadImage"
 
 export default function CommunityWritePage() {
   const navigate = useNavigate()
+  const { user } = useAuth()
   const { addPost } = useCommunity()
   const [category, setCategory] = useState<PostCategory>(POST_CATEGORIES[0])
   const [title, setTitle] = useState("")
@@ -12,12 +15,31 @@ export default function CommunityWritePage() {
   const [error, setError] = useState<string | null>(null)
   const [attachToast, setAttachToast] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
+  const [imageUrl, setImageUrl] = useState<string | null>(null)
+  const [uploadingImage, setUploadingImage] = useState(false)
+  const imageInputRef = useRef<HTMLInputElement>(null)
 
   const isDraft = title.trim().length > 0 || content.trim().length > 0
 
   const showAttachToast = (message: string) => {
     setAttachToast(message)
     window.setTimeout(() => setAttachToast(null), 1800)
+  }
+
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    e.target.value = ""
+    if (!file || !user) return
+
+    setUploadingImage(true)
+    const publicUrl = await uploadImage(user.id, file, "post")
+    setUploadingImage(false)
+
+    if (publicUrl) {
+      setImageUrl(publicUrl)
+    } else {
+      showAttachToast("이미지 업로드에 실패했어요")
+    }
   }
 
   const submit = async () => {
@@ -27,7 +49,7 @@ export default function CommunityWritePage() {
     }
     setError(null)
     setSubmitting(true)
-    const post = await addPost(title, content, category)
+    const post = await addPost(title, content, category, imageUrl)
     setSubmitting(false)
     if (!post) {
       setError("게시글 등록에 실패했어요. 다시 시도해주세요")
@@ -93,15 +115,31 @@ export default function CommunityWritePage() {
         />
         {error && <p className="text-xs text-rose-500">{error}</p>}
 
+        {imageUrl && (
+          <div className="relative w-fit">
+            <img src={imageUrl} alt="첨부 이미지 미리보기" className="h-28 w-28 rounded-xl object-cover" />
+            <button
+              type="button"
+              onClick={() => setImageUrl(null)}
+              aria-label="첨부 이미지 삭제"
+              className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-neutral-900/80 text-white"
+            >
+              <X size={13} />
+            </button>
+          </div>
+        )}
+
         <div className="flex gap-2">
           <button
             type="button"
-            onClick={() => showAttachToast("사진 추가는 준비중이에요")}
-            className="flex items-center gap-1.5 rounded-full bg-neutral-100 px-3.5 py-2 text-xs font-medium text-neutral-600 transition-colors duration-150 hover:bg-neutral-200 dark:bg-white/5 dark:text-neutral-300 dark:hover:bg-white/10"
+            onClick={() => imageInputRef.current?.click()}
+            disabled={uploadingImage}
+            className="flex items-center gap-1.5 rounded-full bg-neutral-100 px-3.5 py-2 text-xs font-medium text-neutral-600 transition-colors duration-150 hover:bg-neutral-200 disabled:opacity-60 dark:bg-white/5 dark:text-neutral-300 dark:hover:bg-white/10"
           >
             <Image size={14} />
-            사진 추가
+            {uploadingImage ? "업로드 중..." : "사진 추가"}
           </button>
+          <input ref={imageInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
           <button
             type="button"
             onClick={() => showAttachToast("링크 추가는 준비중이에요")}

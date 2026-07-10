@@ -17,10 +17,11 @@ import { useScrap } from "../store/ScrapContext"
 import { AVATAR_STYLES, useProfile } from "../store/ProfileContext"
 import { useActivity } from "../store/ActivityContext"
 import { appVersion } from "../mock/data"
+import { uploadImage } from "../lib/uploadImage"
 
 export default function MyPage() {
   const navigate = useNavigate()
-  const { logout } = useAuth()
+  const { user, logout } = useAuth()
   const { profile, updateProfile } = useProfile()
   const { items } = useScrap()
   const { recentSearches, viewedProducts, analysisRunCount } = useActivity()
@@ -29,6 +30,7 @@ export default function MyPage() {
 
   const [editingNickname, setEditingNickname] = useState(false)
   const [nicknameDraft, setNicknameDraft] = useState(profile.nickname)
+  const [uploadingPhoto, setUploadingPhoto] = useState(false)
 
   const stats = [
     { label: "리뷰 분석", value: analysisRunCount, to: "/my/reviews" },
@@ -46,16 +48,18 @@ export default function MyPage() {
     { icon: ShieldCheck, label: "개인정보처리방침", to: "/legal/privacy" },
   ]
 
-  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (!file) return
-    const reader = new FileReader()
-    reader.onload = () => {
-      if (typeof reader.result === "string") {
-        updateProfile({ ...profile, avatarPhoto: reader.result })
-      }
+    e.target.value = ""
+    if (!file || !user) return
+
+    setUploadingPhoto(true)
+    const publicUrl = await uploadImage(user.id, file, "avatar")
+    setUploadingPhoto(false)
+
+    if (publicUrl) {
+      updateProfile({ ...profile, avatarPhoto: publicUrl })
     }
-    reader.readAsDataURL(file)
   }
 
   const startEditingNickname = () => {
@@ -77,6 +81,7 @@ export default function MyPage() {
         <button
           type="button"
           onClick={() => photoInputRef.current?.click()}
+          disabled={uploadingPhoto}
           aria-label="프로필 사진 변경"
           className="group relative h-20 w-20 shrink-0 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-500"
         >
@@ -85,6 +90,11 @@ export default function MyPage() {
           ) : (
             <div className={`flex h-20 w-20 items-center justify-center rounded-full ${avatar.bg}`}>
               <User size={32} className={avatar.fg} />
+            </div>
+          )}
+          {uploadingPhoto && (
+            <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/40">
+              <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/40 border-t-white" />
             </div>
           )}
           <span className="absolute -bottom-0.5 -right-0.5 flex h-6 w-6 items-center justify-center rounded-full border-2 border-brand-500 bg-white text-neutral-600 transition-transform duration-150 group-hover:scale-110 group-active:scale-95">

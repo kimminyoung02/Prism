@@ -357,6 +357,7 @@ export default function ResultPage() {
                       <div className="flex items-center justify-between gap-2 border-t border-neutral-100 pt-2.5 dark:border-white/10">
                         <EngagementBar
                           id={review.id}
+                          targetType="review"
                           showDislike={false}
                           commentsOpen={expandedComments.has(review.id)}
                           onToggleComments={() => toggleComments(review.id)}

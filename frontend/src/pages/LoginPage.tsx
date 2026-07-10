@@ -6,7 +6,7 @@ import prismWordmark from "../assets/prism-wordmark.png"
 
 export default function LoginPage() {
   const navigate = useNavigate()
-  const { signIn } = useAuth()
+  const { signIn, signInWithOAuth } = useAuth()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
@@ -26,7 +26,14 @@ export default function LoginPage() {
     navigate("/my")
   }
 
-  const showSocialPlaceholder = (label: string) => setError(`${label} 로그인은 준비중이에요`)
+  const handleOAuth = async (provider: "google" | "kakao") => {
+    setError(null)
+    const { error: oauthError } = await signInWithOAuth(provider)
+    // 성공 시에는 페이지 전체가 리다이렉트되므로 이 아래 코드가 실행되지 않음
+    if (oauthError) setError(oauthError)
+  }
+
+  const showNaverNotice = () => setError("네이버 로그인은 Supabase가 기본 지원하지 않아 별도 연동이 필요해요")
 
   return (
     <div className="mx-auto flex min-h-svh max-w-md flex-col justify-center gap-8 px-6 pb-24 pt-10">
@@ -105,7 +112,7 @@ export default function LoginPage() {
       <div className="flex items-center justify-center gap-4">
         <button
           type="button"
-          onClick={() => showSocialPlaceholder("카카오")}
+          onClick={() => handleOAuth("kakao")}
           aria-label="카카오로 시작하기"
           title="카카오로 시작하기"
           className="neu-sm neu-pressable flex h-14 w-14 items-center justify-center rounded-full bg-[#FEE500] text-neutral-900 transition-opacity duration-150 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2"
@@ -114,7 +121,7 @@ export default function LoginPage() {
         </button>
         <button
           type="button"
-          onClick={() => showSocialPlaceholder("네이버")}
+          onClick={showNaverNotice}
           aria-label="네이버로 시작하기"
           title="네이버로 시작하기"
           className="neu-sm neu-pressable flex h-14 w-14 items-center justify-center rounded-full bg-[#03C75A] text-white transition-opacity duration-150 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2"
@@ -123,7 +130,7 @@ export default function LoginPage() {
         </button>
         <button
           type="button"
-          onClick={() => showSocialPlaceholder("구글")}
+          onClick={() => handleOAuth("google")}
           aria-label="구글로 시작하기"
           title="구글로 시작하기"
           className="neu-sm neu-pressable flex h-14 w-14 items-center justify-center rounded-full bg-white text-neutral-500 transition-colors duration-150 hover:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 dark:bg-[#1A2E3D] dark:hover:bg-neutral-800"

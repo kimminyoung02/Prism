@@ -1,5 +1,6 @@
 -- Prism Supabase schema
--- Supabase 프로젝트 SQL Editor에서 한 번 실행. (Project → SQL Editor → New query → 붙여넣고 Run)
+-- Supabase 프로젝트 SQL Editor에서 실행. (Project → SQL Editor → New query → 붙여넣고 Run)
+-- 전체가 재실행 가능(idempotent)하도록 작성됨 — 스키마가 바뀔 때마다 전체를 다시 실행해도 안전함.
 
 create extension if not exists "pgcrypto";
 
@@ -17,25 +18,38 @@ create table if not exists public.users (
 
 alter table public.users enable row level security;
 
+drop policy if exists "users are publicly readable" on public.users;
 create policy "users are publicly readable"
   on public.users for select
   using (true);
 
+drop policy if exists "users can update own row" on public.users;
 create policy "users can update own row"
   on public.users for update
   using (auth.uid() = id);
 
--- 신규 가입 시 public.users 행 자동 생성
+-- 신규 가입 시 public.users 행 자동 생성.
+-- 이메일 가입은 raw_user_meta_data.nickname만 있고, 카카오/구글 OAuth는
+-- 각 provider가 넘겨주는 필드명이 달라서 순서대로 폴백함.
 create or replace function public.handle_new_user()
 returns trigger
 language plpgsql
 security definer set search_path = public
 as $$
 begin
-  insert into public.users (id, nickname)
+  insert into public.users (id, nickname, avatar_url)
   values (
     new.id,
-    coalesce(new.raw_user_meta_data->>'nickname', split_part(new.email, '@', 1))
+    coalesce(
+      new.raw_user_meta_data->>'nickname',
+      new.raw_user_meta_data->>'full_name',
+      new.raw_user_meta_data->>'name',
+      split_part(new.email, '@', 1)
+    ),
+    coalesce(
+      new.raw_user_meta_data->>'avatar_url',
+      new.raw_user_meta_data->>'picture'
+    )
   );
   return new;
 end;
@@ -60,6 +74,7 @@ create index if not exists search_history_user_id_idx on public.search_history(u
 
 alter table public.search_history enable row level security;
 
+drop policy if exists "users manage own search history" on public.search_history;
 create policy "users manage own search history"
   on public.search_history for all
   using (auth.uid() = user_id)
@@ -76,6 +91,7 @@ create table if not exists public.popular_searches (
 
 alter table public.popular_searches enable row level security;
 
+drop policy if exists "popular searches are publicly readable" on public.popular_searches;
 create policy "popular searches are publicly readable"
   on public.popular_searches for select
   using (true);
@@ -124,6 +140,7 @@ create index if not exists scraps_user_id_idx on public.scraps(user_id, created_
 
 alter table public.scraps enable row level security;
 
+drop policy if exists "users manage own scraps" on public.scraps;
 create policy "users manage own scraps"
   on public.scraps for all
   using (auth.uid() = user_id)
@@ -146,18 +163,22 @@ create index if not exists posts_created_at_idx on public.posts(created_at desc)
 
 alter table public.posts enable row level security;
 
+drop policy if exists "posts are publicly readable" on public.posts;
 create policy "posts are publicly readable"
   on public.posts for select
   using (true);
 
+drop policy if exists "authenticated users can create posts" on public.posts;
 create policy "authenticated users can create posts"
   on public.posts for insert
   with check (auth.uid() = author_id);
 
+drop policy if exists "authors manage own posts" on public.posts;
 create policy "authors manage own posts"
   on public.posts for update
   using (auth.uid() = author_id);
 
+drop policy if exists "authors delete own posts" on public.posts;
 create policy "authors delete own posts"
   on public.posts for delete
   using (auth.uid() = author_id);
@@ -193,18 +214,81 @@ create index if not exists comments_target_idx on public.comments(target_type, t
 
 alter table public.comments enable row level security;
 
+drop policy if exists "comments are publicly readable" on public.comments;
 create policy "comments are publicly readable"
   on public.comments for select
   using (true);
 
+drop policy if exists "authenticated users can write comments" on public.comments;
 create policy "authenticated users can write comments"
   on public.comments for insert
   with check (auth.uid() = author_id);
 
+drop policy if exists "authors manage own comments" on public.comments;
 create policy "authors manage own comments"
   on public.comments for update
   using (auth.uid() = author_id);
 
+drop policy if exists "authors delete own comments" on public.comments;
 create policy "authors delete own comments"
   on public.comments for delete
   using (auth.uid() = author_id);
+
+-- 게시글 사진 첨부용 (없으면 null)
+alter table public.posts add column if not exists image_url text;
+
+-- ===================================================================
+-- likes: 좋아요/싫어요 (리뷰/게시글/댓글 공용)
+-- ===================================================================
+create table if not exists public.likes (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references public.users(id) on delete cascade,
+  target_type text not null check (target_type in ('post', 'review', 'comment')),
+  target_id text not null, -- posts.id, 외부 리뷰 id, 또는 comments.id
+  vote_type text not null check (vote_type in ('like', 'dislike')),
+  created_at timestamptz not null default now(),
+  unique (user_id, target_type, target_id)
+);
+
+create index if not exists likes_target_idx on public.likes(target_type, target_id);
+
+alter table public.likes enable row level security;
+
+drop policy if exists "likes are publicly readable" on public.likes;
+create policy "likes are publicly readable"
+  on public.likes for select
+  using (true);
+
+drop policy if exists "users manage own likes" on public.likes;
+create policy "users manage own likes"
+  on public.likes for all
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+
+-- ===================================================================
+-- storage: 프로필 사진 / 게시글 첨부 이미지
+-- 경로 규칙: {user_id}/avatar-*.* , {user_id}/post-*.*  (RLS가 첫 폴더로 소유자 확인)
+-- ===================================================================
+insert into storage.buckets (id, name, public)
+values ('images', 'images', true)
+on conflict (id) do nothing;
+
+drop policy if exists "images are publicly readable" on storage.objects;
+create policy "images are publicly readable"
+  on storage.objects for select
+  using (bucket_id = 'images');
+
+drop policy if exists "users can upload own images" on storage.objects;
+create policy "users can upload own images"
+  on storage.objects for insert
+  with check (bucket_id = 'images' and auth.uid()::text = (storage.foldername(name))[1]);
+
+drop policy if exists "users can update own images" on storage.objects;
+create policy "users can update own images"
+  on storage.objects for update
+  using (bucket_id = 'images' and auth.uid()::text = (storage.foldername(name))[1]);
+
+drop policy if exists "users can delete own images" on storage.objects;
+create policy "users can delete own images"
+  on storage.objects for delete
+  using (bucket_id = 'images' and auth.uid()::text = (storage.foldername(name))[1]);

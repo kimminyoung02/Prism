@@ -1,6 +1,8 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { ArrowLeft, CheckCircle2, Eye, EyeOff } from "lucide-react"
+import { supabase, isSupabaseConfigured } from "../lib/supabaseClient"
+import { useAuth } from "../store/AuthContext"
 
 interface PasswordFieldProps {
   id: string
@@ -44,13 +46,15 @@ function PasswordField({ id, label, value, onChange, placeholder, autoComplete }
 
 export default function ChangePasswordPage() {
   const navigate = useNavigate()
+  const { user } = useAuth()
   const [current, setCurrent] = useState("")
   const [next, setNext] = useState("")
   const [confirm, setConfirm] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [done, setDone] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!current || !next || !confirm) {
       setError("모든 항목을 입력해주세요")
@@ -60,7 +64,34 @@ export default function ChangePasswordPage() {
       setError("새 비밀번호가 일치하지 않아요")
       return
     }
+    if (!isSupabaseConfigured || !user?.email) {
+      setError("Supabase 연결 설정이 필요해요")
+      return
+    }
+
     setError(null)
+    setSubmitting(true)
+
+    const { error: reauthError } = await supabase.auth.signInWithPassword({ email: user.email, password: current })
+    if (reauthError) {
+      setSubmitting(false)
+      setError("현재 비밀번호가 올바르지 않아요")
+      return
+    }
+
+    const { error: updateError } = await supabase.auth.updateUser({ password: next })
+    setSubmitting(false)
+    if (updateError) {
+      if (updateError.message.includes("Password should be at least")) {
+        setError("비밀번호는 6자 이상이어야 해요")
+      } else if (updateError.message.toLowerCase().includes("should be different")) {
+        setError("현재 비밀번호와 다른 비밀번호를 입력해주세요")
+      } else {
+        setError(updateError.message)
+      }
+      return
+    }
+
     setDone(true)
     setTimeout(() => navigate("/my/settings"), 1200)
   }
@@ -119,9 +150,10 @@ export default function ChangePasswordPage() {
 
         <button
           type="submit"
-          className="mt-1 w-full rounded-xl bg-gradient-to-r from-brand-500 to-brand-400 py-3.5 text-sm font-semibold text-white transition duration-150 hover:brightness-110 active:brightness-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2"
+          disabled={submitting}
+          className="mt-1 w-full rounded-xl bg-gradient-to-r from-brand-500 to-brand-400 py-3.5 text-sm font-semibold text-white transition duration-150 hover:brightness-110 active:brightness-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 disabled:opacity-60"
         >
-          변경하기
+          {submitting ? "변경 중..." : "변경하기"}
         </button>
       </form>
     </div>

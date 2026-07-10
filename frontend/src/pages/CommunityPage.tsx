@@ -17,14 +17,17 @@ type SortMode = "latest" | "popular"
 export default function CommunityPage() {
   const navigate = useNavigate()
   const { posts, loading, viewCounts } = useCommunity()
-  const { getRecord, ensureSeed } = useEngagement()
+  const { getRecord, loadVotes, loadComments } = useEngagement()
   const [sortMode, setSortMode] = useState<SortMode>("latest")
   const [searchOpen, setSearchOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
   const [categoryFilter, setCategoryFilter] = useState<PostCategory | "전체">("전체")
 
   useEffect(() => {
-    posts.forEach((post) => ensureSeed(post.id, post.seedLikes, post.seedDislikes))
+    posts.forEach((post) => {
+      loadVotes("post", post.id)
+      loadComments("post", post.id)
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [posts])
 
@@ -157,6 +160,10 @@ export default function CommunityPage() {
                   {post.content.length > 40 && <span className="ml-1 text-neutral-400 dark:text-neutral-500">더보기</span>}
                 </p>
               </div>
+
+              {post.imageUrl && (
+                <img src={post.imageUrl} alt="" className="h-32 w-full rounded-xl object-cover" />
+              )}
 
               <div className="flex items-center gap-3 text-xs text-neutral-400 dark:text-neutral-500">
                 <span className="flex items-center gap-1">

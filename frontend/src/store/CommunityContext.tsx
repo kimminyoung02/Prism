@@ -21,9 +21,8 @@ export interface CommunityPost {
   content: string
   author: string
   timeLabel: string
-  seedLikes: number
-  seedDislikes: number
   seedViews: number
+  imageUrl: string | null
 }
 
 function formatRelativeTime(iso: string): string {
@@ -50,16 +49,15 @@ function fromRow(row: PostRowWithAuthor): CommunityPost {
     content: row.content,
     author: row.author?.nickname ?? "prism_user",
     timeLabel: formatRelativeTime(row.created_at),
-    seedLikes: 0,
-    seedDislikes: 0,
     seedViews: row.view_count,
+    imageUrl: row.image_url,
   }
 }
 
 interface CommunityContextValue {
   posts: CommunityPost[]
   loading: boolean
-  addPost: (title: string, content: string, category: PostCategory) => Promise<CommunityPost | null>
+  addPost: (title: string, content: string, category: PostCategory, imageUrl?: string | null) => Promise<CommunityPost | null>
   getPost: (id: string) => CommunityPost | undefined
   viewCounts: Record<string, number>
   recordView: (id: string) => void
@@ -96,12 +94,17 @@ export function CommunityProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
-  const addPost = async (title: string, content: string, category: PostCategory): Promise<CommunityPost | null> => {
+  const addPost = async (
+    title: string,
+    content: string,
+    category: PostCategory,
+    imageUrl?: string | null,
+  ): Promise<CommunityPost | null> => {
     if (!user || !isSupabaseConfigured) return null
 
     const { data, error } = await supabase
       .from("posts")
-      .insert({ author_id: user.id, category, title: title.trim(), content: content.trim() })
+      .insert({ author_id: user.id, category, title: title.trim(), content: content.trim(), image_url: imageUrl ?? null })
       .select("*")
       .single()
 
