@@ -3,6 +3,7 @@ import LoginPage from "./LoginPage"
 import MyPage from "./MyPage"
 
 export default function MyTab() {
-  const { isLoggedIn } = useAuth()
+  const { isLoggedIn, loading } = useAuth()
+  if (loading) return null
   return isLoggedIn ? <MyPage /> : <LoginPage />
 }

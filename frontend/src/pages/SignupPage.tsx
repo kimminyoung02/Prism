@@ -2,20 +2,48 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { ArrowLeft, Eye, EyeOff } from "lucide-react"
 import { useAuth } from "../store/AuthContext"
-import { useProfile } from "../store/ProfileContext"
 
 export default function SignupPage() {
   const navigate = useNavigate()
-  const { login } = useAuth()
-  const { profile, updateProfile } = useProfile()
+  const { signUp } = useAuth()
 
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [passwordConfirm, setPasswordConfirm] = useState("")
   const [nickname, setNickname] = useState("")
   const [error, setError] = useState<string | null>(null)
+  const [notice, setNotice] = useState<string | null>(null)
   const [showPassword, setShowPassword] = useState(false)
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    if (!email.trim() || !password || !nickname.trim()) {
+      setError("모든 항목을 입력해주세요")
+      return
+    }
+    if (password !== passwordConfirm) {
+      setError("비밀번호가 일치하지 않아요")
+      return
+    }
+
+    setError(null)
+    setSubmitting(true)
+    const result = await signUp(email.trim(), password, nickname.trim())
+    setSubmitting(false)
+
+    if (result.error) {
+      setError(result.error)
+      return
+    }
+    if (result.needsEmailConfirm) {
+      setNotice("가입 확인 메일을 보냈어요. 메일함에서 인증 후 로그인해주세요.")
+      return
+    }
+    navigate("/my")
+  }
 
   return (
     <div className="mx-auto flex min-h-svh max-w-md flex-col gap-8 px-6 pb-24 pt-8">
@@ -30,26 +58,7 @@ export default function SignupPage() {
         <h1 className="text-base font-bold text-neutral-900 dark:text-neutral-100">회원가입</h1>
       </div>
 
-      <form
-        onSubmit={(e) => {
-          e.preventDefault()
-
-          if (!email.trim() || !password || !nickname.trim()) {
-            setError("모든 항목을 입력해주세요")
-            return
-          }
-          if (password !== passwordConfirm) {
-            setError("비밀번호가 일치하지 않아요")
-            return
-          }
-
-          setError(null)
-          updateProfile({ ...profile, nickname: nickname.trim(), email: email.trim() })
-          login()
-          navigate("/my")
-        }}
-        className="flex flex-col gap-3"
-      >
+      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
         <div className="flex flex-col gap-1.5">
           <label htmlFor="signup-email" className="text-xs font-medium text-neutral-600 dark:text-neutral-400">
             이메일
@@ -128,12 +137,14 @@ export default function SignupPage() {
         </div>
 
         {error && <p className="text-xs text-rose-500">{error}</p>}
+        {notice && <p className="text-xs text-emerald-600 dark:text-emerald-400">{notice}</p>}
 
         <button
           type="submit"
-          className="mt-1 w-full rounded-xl bg-gradient-to-r from-brand-500 to-brand-400 py-3.5 text-sm font-semibold text-white transition duration-150 hover:brightness-110 active:brightness-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2"
+          disabled={submitting}
+          className="mt-1 w-full rounded-xl bg-gradient-to-r from-brand-500 to-brand-400 py-3.5 text-sm font-semibold text-white transition duration-150 hover:brightness-110 active:brightness-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 disabled:opacity-60"
         >
-          회원가입
+          {submitting ? "가입 처리 중..." : "회원가입"}
         </button>
       </form>
 

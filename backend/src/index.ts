@@ -5,6 +5,10 @@ import express from "express"
 const app = express()
 const port = process.env.PORT ?? 3001
 
+// 개발/테스트 단계 API 호출량 제한. 실 서비스 전환 시 이 값들을 늘리면 됨.
+const BLOG_RESULT_LIMIT = 10
+const YOUTUBE_RESULT_LIMIT = 5
+
 app.use(cors())
 app.use(express.json())
 
@@ -50,7 +54,7 @@ app.get("/api/search/blog", async (req, res) => {
 
   const url = new URL("https://openapi.naver.com/v1/search/blog.json")
   url.searchParams.set("query", query)
-  url.searchParams.set("display", "10")
+  url.searchParams.set("display", String(BLOG_RESULT_LIMIT))
   url.searchParams.set("sort", "sim")
 
   try {
@@ -167,7 +171,7 @@ app.get("/api/search/youtube", async (req, res) => {
     searchUrl.searchParams.set("part", "snippet")
     searchUrl.searchParams.set("q", query)
     searchUrl.searchParams.set("type", "video")
-    searchUrl.searchParams.set("maxResults", "10")
+    searchUrl.searchParams.set("maxResults", String(YOUTUBE_RESULT_LIMIT))
     searchUrl.searchParams.set("key", apiKey)
 
     const searchRes = await fetch(searchUrl)

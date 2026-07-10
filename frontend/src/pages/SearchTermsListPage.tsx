@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom"
-import { ArrowLeft, Search, TrendingUp, TrendingDown, Minus } from "lucide-react"
-import { popularSearchTerms } from "../mock/data"
+import { ArrowLeft, Search } from "lucide-react"
 import { useActivity } from "../store/ActivityContext"
+import { usePopularSearches } from "../store/usePopularSearches"
 
 interface SearchTermsListPageProps {
   variant: "recent" | "popular"
@@ -10,6 +10,7 @@ interface SearchTermsListPageProps {
 export default function SearchTermsListPage({ variant }: SearchTermsListPageProps) {
   const navigate = useNavigate()
   const { recentSearches } = useActivity()
+  const popularSearches = usePopularSearches(30)
 
   const startSearch = (q: string) => {
     navigate("/collecting", { state: { query: q } })
@@ -44,9 +45,9 @@ export default function SearchTermsListPage({ variant }: SearchTermsListPageProp
             </li>
           ))}
         </ul>
-      ) : (
+      ) : popularSearches.length > 0 ? (
         <ul className="flex flex-col">
-          {popularSearchTerms.map((item, i) => (
+          {popularSearches.map((item, i) => (
             <li key={item.term}>
               <button
                 onClick={() => startSearch(item.term)}
@@ -54,23 +55,13 @@ export default function SearchTermsListPage({ variant }: SearchTermsListPageProp
               >
                 <span className="w-4 text-sm font-semibold text-brand-500">{i + 1}</span>
                 <span className="flex-1 text-sm text-neutral-800 dark:text-neutral-200">{item.term}</span>
-                {item.change === "up" && (
-                  <span className="flex items-center gap-0.5 text-xs font-medium text-rose-500">
-                    <TrendingUp size={14} />
-                    {item.diff}
-                  </span>
-                )}
-                {item.change === "down" && (
-                  <span className="flex items-center gap-0.5 text-xs font-medium text-blue-500">
-                    <TrendingDown size={14} />
-                    {item.diff}
-                  </span>
-                )}
-                {item.change === "same" && <Minus size={14} className="text-neutral-300 dark:text-neutral-600" />}
+                <span className="text-xs text-neutral-400 dark:text-neutral-500">{item.count}회</span>
               </button>
             </li>
           ))}
         </ul>
+      ) : (
+        <p className="py-8 text-center text-sm text-neutral-400 dark:text-neutral-500">아직 인기 검색어가 없어요</p>
       )}
     </div>
   )

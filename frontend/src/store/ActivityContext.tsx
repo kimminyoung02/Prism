@@ -1,5 +1,7 @@
-import { createContext, useContext, useState, type ReactNode } from "react"
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react"
 import type { MyListItem } from "../mock/data"
+import { supabase, isSupabaseConfigured } from "../lib/supabaseClient"
+import { useAuth } from "./AuthContext"
 
 const MAX_RECENT_SEARCHES = 8
 const MAX_VIEWED_PRODUCTS = 20
@@ -24,14 +26,50 @@ function formatToday() {
 }
 
 export function ActivityProvider({ children }: { children: ReactNode }) {
+  const { user } = useAuth()
   const [recentSearches, setRecentSearches] = useState<string[]>([])
   const [viewedProducts, setViewedProducts] = useState<MyListItem[]>([])
   const [analysisRunCount, setAnalysisRunCount] = useState(0)
+
+  useEffect(() => {
+    if (!user || !isSupabaseConfigured) {
+      setRecentSearches([])
+      return
+    }
+
+    let cancelled = false
+    supabase
+      .from("search_history")
+      .select("query")
+      .eq("user_id", user.id)
+      .order("searched_at", { ascending: false })
+      .limit(MAX_RECENT_SEARCHES * 3)
+      .then(({ data }) => {
+        if (cancelled || !data) return
+        const deduped: string[] = []
+        for (const row of data as { query: string }[]) {
+          if (!deduped.includes(row.query)) deduped.push(row.query)
+          if (deduped.length >= MAX_RECENT_SEARCHES) break
+        }
+        setRecentSearches(deduped)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [user])
 
   const addSearch = (term: string) => {
     const trimmed = term.trim()
     if (!trimmed) return
     setRecentSearches((prev) => [trimmed, ...prev.filter((t) => t !== trimmed)].slice(0, MAX_RECENT_SEARCHES))
+
+    if (user && isSupabaseConfigured) {
+      supabase
+        .from("search_history")
+        .insert({ user_id: user.id, query: trimmed })
+        .then(undefined, (err: unknown) => console.error("search_history insert failed", err))
+    }
   }
 
   const recordProductView = (title: string, rating: number) => {

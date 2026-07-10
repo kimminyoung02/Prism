@@ -11,6 +11,7 @@ export default function CommunityWritePage() {
   const [content, setContent] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [attachToast, setAttachToast] = useState<string | null>(null)
+  const [submitting, setSubmitting] = useState(false)
 
   const isDraft = title.trim().length > 0 || content.trim().length > 0
 
@@ -19,12 +20,19 @@ export default function CommunityWritePage() {
     window.setTimeout(() => setAttachToast(null), 1800)
   }
 
-  const submit = () => {
+  const submit = async () => {
     if (!title.trim() || !content.trim()) {
       setError("제목과 내용을 모두 입력해주세요")
       return
     }
-    addPost(title, content, category)
+    setError(null)
+    setSubmitting(true)
+    const post = await addPost(title, content, category)
+    setSubmitting(false)
+    if (!post) {
+      setError("게시글 등록에 실패했어요. 다시 시도해주세요")
+      return
+    }
     navigate("/community")
   }
 
@@ -42,9 +50,10 @@ export default function CommunityWritePage() {
         <button
           type="button"
           onClick={submit}
-          className="rounded-full bg-brand-600 px-4 py-1.5 text-sm font-semibold text-white transition-colors duration-150 hover:bg-brand-500 active:bg-brand-600"
+          disabled={submitting}
+          className="rounded-full bg-brand-600 px-4 py-1.5 text-sm font-semibold text-white transition-colors duration-150 hover:bg-brand-500 active:bg-brand-600 disabled:opacity-60"
         >
-          게시
+          {submitting ? "게시 중..." : "게시"}
         </button>
       </div>
 

@@ -10,12 +10,10 @@ import {
   BarChart2,
   MapPin,
   Flame,
-  TrendingUp,
-  TrendingDown,
-  Minus,
 } from "lucide-react"
-import { popularSearchTerms, todaysPick } from "../mock/data"
+import { todaysPick } from "../mock/data"
 import { useActivity } from "../store/ActivityContext"
+import { usePopularSearches } from "../store/usePopularSearches"
 import ProductThumbnail from "../components/ProductThumbnail"
 import prismLogo from "../assets/prism-logo.svg"
 import prismWordmark from "../assets/prism-wordmark.png"
@@ -24,6 +22,7 @@ export default function SearchPage() {
   const [query, setQuery] = useState("")
   const navigate = useNavigate()
   const { recentSearches, viewedProducts } = useActivity()
+  const popularSearches = usePopularSearches(6)
 
   const startSearch = (q: string) => {
     const trimmed = q.trim()
@@ -107,40 +106,31 @@ export default function SearchPage() {
               <ChevronRight size={14} />
             </button>
           </div>
-          <div className="grid grid-cols-2 gap-1.5">
-            {popularSearchTerms.slice(0, 6).map((item, i) => (
-              <button
-                key={item.term}
-                onClick={() => startSearch(item.term)}
-                className="neu-sm neu-pressable flex items-center gap-1.5 rounded-xl bg-white px-2.5 py-2 text-left transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 dark:bg-[#1A2E3D]"
-              >
-                <span
-                  className={
-                    "flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-[9px] font-bold " +
-                    (i < 3
-                      ? "bg-brand-500 text-white"
-                      : "bg-neutral-100 text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400")
-                  }
+          {popularSearches.length > 0 ? (
+            <div className="grid grid-cols-2 gap-1.5">
+              {popularSearches.map((item, i) => (
+                <button
+                  key={item.term}
+                  onClick={() => startSearch(item.term)}
+                  className="neu-sm neu-pressable flex items-center gap-1.5 rounded-xl bg-white px-2.5 py-2 text-left transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 dark:bg-[#1A2E3D]"
                 >
-                  {i + 1}
-                </span>
-                <span className="flex-1 truncate text-[11px] text-neutral-800 dark:text-neutral-200">{item.term}</span>
-                {item.change === "up" && (
-                  <span className="flex shrink-0 items-center gap-0.5 text-xs font-medium text-rose-500">
-                    <TrendingUp size={11} />
+                  <span
+                    className={
+                      "flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-[9px] font-bold " +
+                      (i < 3
+                        ? "bg-brand-500 text-white"
+                        : "bg-neutral-100 text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400")
+                    }
+                  >
+                    {i + 1}
                   </span>
-                )}
-                {item.change === "down" && (
-                  <span className="flex shrink-0 items-center gap-0.5 text-xs font-medium text-blue-500">
-                    <TrendingDown size={11} />
-                  </span>
-                )}
-                {item.change === "same" && (
-                  <Minus size={11} className="shrink-0 text-neutral-300 dark:text-neutral-600" />
-                )}
-              </button>
-            ))}
-          </div>
+                  <span className="flex-1 truncate text-[11px] text-neutral-800 dark:text-neutral-200">{item.term}</span>
+                </button>
+              ))}
+            </div>
+          ) : (
+            <p className="py-2 text-sm text-neutral-400 dark:text-neutral-500">아직 인기 검색어가 없어요</p>
+          )}
         </section>
 
         <section className="flex flex-col gap-2">

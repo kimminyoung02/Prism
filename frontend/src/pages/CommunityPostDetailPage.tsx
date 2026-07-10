@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { ArrowLeft, Share2, Eye } from "lucide-react"
-import { useCommunity, SEED_COMMENTS, CATEGORY_STYLES } from "../store/CommunityContext"
+import { useCommunity, CATEGORY_STYLES } from "../store/CommunityContext"
 import { useEngagement } from "../store/EngagementContext"
 import EngagementBar from "../components/EngagementBar"
 import CommentsPanel from "../components/CommentsPanel"
@@ -20,7 +20,7 @@ export default function CommunityPostDetailPage() {
   const post = postId ? getPost(postId) : undefined
 
   useEffect(() => {
-    if (post) ensureSeed(post.id, post.seedLikes, post.seedDislikes, SEED_COMMENTS[post.id])
+    if (post) ensureSeed(post.id, post.seedLikes, post.seedDislikes)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [post?.id])
 
@@ -102,7 +102,7 @@ export default function CommunityPostDetailPage() {
           commentsOpen
           onToggleComments={() => {}}
         />
-        <CommentsPanel id={post.id} />
+        <CommentsPanel id={post.id} targetType="post" />
       </div>
 
       {shareOpen && (

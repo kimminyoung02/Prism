@@ -10,6 +10,8 @@ export default function EditProfilePage() {
   const [avatarIndex, setAvatarIndex] = useState(profile.avatarIndex)
   const [nickname, setNickname] = useState(profile.nickname)
   const [email, setEmail] = useState(profile.email)
+  const [error, setError] = useState<string | null>(null)
+  const [submitting, setSubmitting] = useState(false)
 
   const avatar = AVATAR_STYLES[avatarIndex]
 
@@ -27,9 +29,16 @@ export default function EditProfilePage() {
       </div>
 
       <form
-        onSubmit={(e) => {
+        onSubmit={async (e) => {
           e.preventDefault()
-          updateProfile({ nickname, email, avatarIndex })
+          setError(null)
+          setSubmitting(true)
+          const result = await updateProfile({ ...profile, nickname, email, avatarIndex })
+          setSubmitting(false)
+          if (result.error) {
+            setError(result.error)
+            return
+          }
           navigate("/my")
         }}
         className="flex flex-col gap-8"
@@ -71,11 +80,14 @@ export default function EditProfilePage() {
           </label>
         </div>
 
+        {error && <p className="text-xs text-rose-500">{error}</p>}
+
         <button
           type="submit"
-          className="w-full rounded-full bg-gradient-to-r from-brand-500 to-brand-400 py-3.5 text-sm font-semibold text-white transition duration-150 hover:brightness-110 active:brightness-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2"
+          disabled={submitting}
+          className="w-full rounded-full bg-gradient-to-r from-brand-500 to-brand-400 py-3.5 text-sm font-semibold text-white transition duration-150 hover:brightness-110 active:brightness-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 disabled:opacity-60"
         >
-          수정
+          {submitting ? "수정 중..." : "수정"}
         </button>
       </form>
     </div>

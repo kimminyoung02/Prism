@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { Newspaper, Clapperboard, ShoppingBag, Check } from "lucide-react"
 import { defaultQuery } from "../mock/data"
@@ -12,6 +12,7 @@ export default function CollectingPage() {
   const location = useLocation()
   const query = (location.state as { query?: string } | null)?.query ?? defaultQuery
   const { addSearch } = useActivity()
+  const recordedQueryRef = useRef<string | null>(null)
 
   const [blogTotal, setBlogTotal] = useState<number | null>(null)
   const [youtubeTotal, setYoutubeTotal] = useState<number | null>(null)
@@ -20,6 +21,8 @@ export default function CollectingPage() {
   const [shoppingCount, setShoppingCount] = useState(0)
 
   useEffect(() => {
+    if (recordedQueryRef.current === query) return
+    recordedQueryRef.current = query
     addSearch(query)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query])

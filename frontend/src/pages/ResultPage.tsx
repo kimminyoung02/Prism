@@ -380,7 +380,7 @@ export default function ResultPage() {
                           </button>
                         </div>
                       </div>
-                      {expandedComments.has(review.id) && <CommentsPanel id={review.id} />}
+                      {expandedComments.has(review.id) && <CommentsPanel id={review.id} targetType="review" />}
                     </div>
                   </div>
                 ))}

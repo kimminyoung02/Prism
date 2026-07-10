@@ -1,6 +1,7 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Heart, ArrowUp } from "lucide-react"
 import { useEngagement, type EngagementComment } from "../store/EngagementContext"
+import type { CommentTargetType } from "../lib/database.types"
 
 interface CommentRowProps {
   id: string
@@ -75,11 +76,15 @@ function CommentRow({ id, comment, rootId, isReply, replyingId, replyDraft, onSt
   )
 }
 
-export default function CommentsPanel({ id }: { id: string }) {
-  const { getRecord, addComment } = useEngagement()
+export default function CommentsPanel({ id, targetType }: { id: string; targetType: CommentTargetType }) {
+  const { getRecord, loadComments, addComment } = useEngagement()
   const [draft, setDraft] = useState("")
   const [replyingId, setReplyingId] = useState<string | null>(null)
   const [replyDraft, setReplyDraft] = useState("")
+
+  useEffect(() => {
+    loadComments(targetType, id)
+  }, [targetType, id, loadComments])
 
   const record = getRecord(id)
   const topLevel = record.comments.filter((c) => c.parentId === null)
@@ -87,7 +92,7 @@ export default function CommentsPanel({ id }: { id: string }) {
 
   const submit = () => {
     if (!draft.trim()) return
-    addComment(id, draft)
+    addComment(targetType, id, draft)
     setDraft("")
   }
 
@@ -98,7 +103,7 @@ export default function CommentsPanel({ id }: { id: string }) {
 
   const submitReply = (rootId: string, replyToAuthor: string) => {
     if (!replyDraft.trim()) return
-    addComment(id, replyDraft, rootId, replyToAuthor)
+    addComment(targetType, id, replyDraft, rootId, replyToAuthor)
     setReplyingId(null)
     setReplyDraft("")
   }

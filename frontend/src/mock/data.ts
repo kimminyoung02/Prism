@@ -29,25 +29,6 @@ export interface MyListItem {
   aiComment?: string
 }
 
-export interface PopularSearchTerm {
-  term: string
-  change: "up" | "down" | "same"
-  diff?: number
-}
-
-export const popularSearchTerms: PopularSearchTerm[] = [
-  { term: "H&M 리넨 여름 원피스", change: "up", diff: 2 },
-  { term: "유니클로 린넨 셔츠", change: "same" },
-  { term: "무신사 스탠다드 와이드 팬츠", change: "up", diff: 1 },
-  { term: "폴로 랄프로렌 가디건", change: "down", diff: 3 },
-  { term: "코치 크로스바디백", change: "up", diff: 4 },
-  { term: "나이키 에어포스1 스니커즈", change: "down", diff: 1 },
-  { term: "자라 오버사이즈 블레이저", change: "up", diff: 5 },
-  { term: "아디다스 트랙탑", change: "same" },
-  { term: "탑텐 반팔 티셔츠", change: "up", diff: 2 },
-  { term: "뉴발란스 993 스니커즈", change: "down", diff: 2 },
-]
-
 export const todaysPick = {
   title: "리넨 오버핏 자켓",
   subtitle: "지금 만족도가 가장 높은",

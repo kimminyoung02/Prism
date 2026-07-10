@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { Search, Bell, Pencil, Heart, MessageCircle, Eye, X } from "lucide-react"
-import { useCommunity, SEED_COMMENTS, CATEGORY_STYLES, POST_CATEGORIES, type CommunityPost, type PostCategory } from "../store/CommunityContext"
+import { useCommunity, CATEGORY_STYLES, POST_CATEGORIES, type CommunityPost, type PostCategory } from "../store/CommunityContext"
 import { useEngagement } from "../store/EngagementContext"
 
 const AVATAR_PALETTE = ["bg-sky-400", "bg-violet-400", "bg-amber-400", "bg-emerald-400", "bg-rose-400", "bg-indigo-400"]
@@ -16,7 +16,7 @@ type SortMode = "latest" | "popular"
 
 export default function CommunityPage() {
   const navigate = useNavigate()
-  const { posts, viewCounts } = useCommunity()
+  const { posts, loading, viewCounts } = useCommunity()
   const { getRecord, ensureSeed } = useEngagement()
   const [sortMode, setSortMode] = useState<SortMode>("latest")
   const [searchOpen, setSearchOpen] = useState(false)
@@ -24,7 +24,7 @@ export default function CommunityPage() {
   const [categoryFilter, setCategoryFilter] = useState<PostCategory | "전체">("전체")
 
   useEffect(() => {
-    posts.forEach((post) => ensureSeed(post.id, post.seedLikes, post.seedDislikes, SEED_COMMENTS[post.id]))
+    posts.forEach((post) => ensureSeed(post.id, post.seedLikes, post.seedDislikes))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [posts])
 
@@ -121,7 +121,10 @@ export default function CommunityPage() {
       </div>
 
       <div className="flex flex-col gap-3 px-5 pt-3">
-        {visiblePosts.length === 0 && (
+        {loading && (
+          <p className="py-8 text-center text-sm text-neutral-400 dark:text-neutral-500">게시글을 불러오는 중이에요...</p>
+        )}
+        {!loading && visiblePosts.length === 0 && (
           <p className="py-8 text-center text-sm text-neutral-400 dark:text-neutral-500">게시글이 없어요</p>
         )}
         {visiblePosts.map((post) => {

@@ -1,6 +1,8 @@
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { Bookmark } from "lucide-react"
 import { useScrap, type ScrapItem } from "../store/ScrapContext"
+import { useAuth } from "../store/AuthContext"
 
 interface ScrapButtonProps {
   item: ScrapItem
@@ -9,7 +11,9 @@ interface ScrapButtonProps {
 }
 
 export default function ScrapButton({ item, size = 20, className = "" }: ScrapButtonProps) {
+  const { isLoggedIn } = useAuth()
   const { isScrapped, toggleScrap } = useScrap()
+  const navigate = useNavigate()
   const scrapped = isScrapped(item.id)
   const [popping, setPopping] = useState(false)
 
@@ -21,6 +25,10 @@ export default function ScrapButton({ item, size = 20, className = "" }: ScrapBu
       onClick={(e) => {
         e.preventDefault()
         e.stopPropagation()
+        if (!isLoggedIn) {
+          navigate("/my")
+          return
+        }
         toggleScrap(item)
         setPopping(true)
       }}
