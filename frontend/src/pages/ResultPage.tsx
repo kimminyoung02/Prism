@@ -153,12 +153,12 @@ export default function ResultPage() {
 
   return (
     <div className="mx-auto flex min-h-svh max-w-md flex-col bg-surface pb-24 dark:bg-[#0D1B24]">
-      <div className="bg-gradient-to-b from-brand-500 to-brand-400 px-5 pb-1 pt-8">
+      <div className="bg-gradient-to-b from-brand-glow-500 to-brand-glow-300 px-5 pb-1 pt-8">
         <div className="mb-2 flex items-center gap-3">
           <button
             onClick={() => navigate(-1)}
             aria-label="뒤로 가기"
-            className="-m-3 rounded-full p-3 text-white/80 transition-colors duration-150 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-500"
+            className="-m-3 rounded-full p-3 text-white/80 transition-colors duration-150 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-glow-500"
           >
             <ArrowLeft size={20} />
           </button>
@@ -168,7 +168,7 @@ export default function ResultPage() {
               type="button"
               onClick={() => navigate("/")}
               aria-label="검색"
-              className="-m-2 rounded-full p-2 text-white/80 transition-colors duration-150 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-500"
+              className="-m-2 rounded-full p-2 text-white/80 transition-colors duration-150 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-glow-500"
             >
               <Search size={20} />
             </button>
@@ -187,7 +187,7 @@ export default function ResultPage() {
               type="button"
               onClick={() => setShareUrl(`${window.location.origin}/?shared=product&query=${encodeURIComponent(query)}`)}
               aria-label="공유"
-              className="-m-2 rounded-full p-2 text-white/80 transition-colors duration-150 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-500"
+              className="-m-2 rounded-full p-2 text-white/80 transition-colors duration-150 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-glow-500"
             >
               <Share2 size={20} />
             </button>
@@ -202,7 +202,7 @@ export default function ResultPage() {
               aria-selected={i === activeTab}
               onClick={() => setActiveTab(i)}
               className={
-                "py-2.5 text-center text-xs font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-500 " +
+                "py-2.5 text-center text-xs font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-glow-500 " +
                 (i === activeTab ? "text-white" : "text-white/50 hover:text-white/80")
               }
             >
@@ -229,10 +229,10 @@ export default function ResultPage() {
         >
           <div style={{ width: `${100 / TABS.length}%` }} className="flex shrink-0 flex-col gap-6 overflow-hidden pb-8">
             <div className="flex flex-col overflow-hidden">
-              <div className="flex flex-col items-center gap-3 bg-gradient-to-b from-brand-500 to-brand-400 px-5 pb-14 pt-5 text-center">
+              <div className="flex flex-col items-center gap-3 bg-gradient-to-b from-brand-glow-500 to-brand-glow-300 px-5 pb-14 pt-5 text-center">
                 <ProductThumbnail title={query} className="h-28 w-28 rounded-3xl bg-white/15" iconClassName="text-white" iconSize={48} />
                 <h2 className="text-lg font-bold text-white">{query}</h2>
-                <p className="text-sm text-brand-100">
+                <p className="text-sm text-white/80">
                   리뷰 {totalReviewCount}개 · 분석일 {analyzedDate}
                 </p>
               </div>

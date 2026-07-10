@@ -53,7 +53,7 @@ export default function AnalyzingPage() {
   const dashoffset = circumference - (progress / 100) * circumference
 
   return (
-    <div className="mx-auto flex min-h-svh max-w-md flex-col justify-center gap-10 bg-gradient-to-b from-brand-500 to-brand-400 px-5 pb-24 pt-10">
+    <div className="mx-auto flex min-h-svh max-w-md flex-col justify-center gap-10 bg-gradient-to-b from-brand-glow-500 to-brand-glow-300 px-5 pb-24 pt-10">
       <div className="flex flex-col items-center gap-6">
         <div className="relative flex items-center justify-center" style={{ width: RING_SIZE, height: RING_SIZE }}>
           <div
@@ -89,7 +89,7 @@ export default function AnalyzingPage() {
 
         <div className="flex flex-col gap-1.5 text-center">
           <h1 className="text-lg font-bold text-white">AI가 리뷰를 분석하고 있어요</h1>
-          <p className="text-sm text-brand-100">잠시만 기다려주세요</p>
+          <p className="text-sm text-white/80">잠시만 기다려주세요</p>
         </div>
       </div>
 
@@ -136,7 +136,7 @@ export default function AnalyzingPage() {
                 </p>
                 <p
                   className={`text-xs transition-colors duration-300 ${
-                    state === "pending" ? "text-white/20" : "text-brand-100"
+                    state === "pending" ? "text-white/20" : "text-white/75"
                   }`}
                 >
                   {step.description}
