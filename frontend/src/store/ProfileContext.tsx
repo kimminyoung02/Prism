@@ -4,6 +4,7 @@ export interface Profile {
   nickname: string
   email: string
   avatarIndex: number
+  avatarPhoto?: string
 }
 
 interface ProfileContextValue {
@@ -18,7 +19,7 @@ export const DEFAULT_PROFILE: Profile = {
 }
 
 export const AVATAR_STYLES = [
-  { bg: "bg-yellow-50 dark:bg-yellow-500/10", fg: "text-yellow-500" },
+  { bg: "bg-brand-50 dark:bg-brand-500/10", fg: "text-brand-500" },
   { bg: "bg-sky-50 dark:bg-sky-500/10", fg: "text-sky-500" },
   { bg: "bg-emerald-50 dark:bg-emerald-500/10", fg: "text-emerald-500" },
   { bg: "bg-pink-50 dark:bg-pink-500/10", fg: "text-pink-500" },

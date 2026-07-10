@@ -1,8 +1,9 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { MessageCircle } from "lucide-react"
+import { MessageCircle, Eye, EyeOff } from "lucide-react"
 import { useAuth } from "../store/AuthContext"
 import { useProfile } from "../store/ProfileContext"
+import prismWordmark from "../assets/prism-wordmark.png"
 
 export default function LoginPage() {
   const navigate = useNavigate()
@@ -10,10 +11,13 @@ export default function LoginPage() {
   const { profile, updateProfile } = useProfile()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
 
   return (
     <div className="mx-auto flex min-h-svh max-w-md flex-col justify-center gap-8 px-6 pb-24 pt-10">
-      <h1 className="text-center text-3xl font-bold tracking-tight text-yellow-500">Prism</h1>
+      <h1 className="flex justify-center">
+        <img src={prismWordmark} alt="Prism" className="h-9 w-auto dark:invert" />
+      </h1>
 
       <form
         onSubmit={(e) => {
@@ -26,25 +30,47 @@ export default function LoginPage() {
         }}
         className="flex flex-col gap-3"
       >
-        <input
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          type="text"
-          placeholder="이메일 또는 아이디"
-          autoComplete="username"
-          className="w-full rounded-xl border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-900 outline-none transition-colors placeholder:text-neutral-400 focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400/20 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100"
-        />
-        <input
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          type="password"
-          placeholder="비밀번호"
-          autoComplete="current-password"
-          className="w-full rounded-xl border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-900 outline-none transition-colors placeholder:text-neutral-400 focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400/20 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100"
-        />
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="login-email" className="text-xs font-medium text-neutral-600 dark:text-neutral-400">
+            이메일 또는 아이디
+          </label>
+          <input
+            id="login-email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            type="text"
+            placeholder="이메일 또는 아이디를 입력하세요"
+            autoComplete="username"
+            className="neu-inset w-full rounded-xl bg-white px-4 py-3 text-sm text-neutral-900 outline-none transition-colors placeholder:text-neutral-400 focus:ring-2 focus:ring-brand-400/30 dark:bg-[#1A2E3D] dark:text-neutral-100"
+          />
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="login-password" className="text-xs font-medium text-neutral-600 dark:text-neutral-400">
+            비밀번호
+          </label>
+          <div className="relative">
+            <input
+              id="login-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              type={showPassword ? "text" : "password"}
+              placeholder="비밀번호를 입력하세요"
+              autoComplete="current-password"
+              className="neu-inset w-full rounded-xl bg-white px-4 py-3 pr-11 text-sm text-neutral-900 outline-none transition-colors placeholder:text-neutral-400 focus:ring-2 focus:ring-brand-400/30 dark:bg-[#1A2E3D] dark:text-neutral-100"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((v) => !v)}
+              aria-label={showPassword ? "비밀번호 숨기기" : "비밀번호 표시"}
+              className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-full p-2.5 text-neutral-400 transition-colors duration-150 hover:text-neutral-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 dark:hover:text-neutral-200"
+            >
+              {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+            </button>
+          </div>
+        </div>
         <button
           type="submit"
-          className="mt-1 w-full rounded-xl bg-yellow-400 py-3.5 text-sm font-semibold text-neutral-900 transition-colors duration-150 hover:bg-yellow-500 active:bg-yellow-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2"
+          className="mt-1 w-full rounded-xl bg-gradient-to-r from-brand-500 to-brand-400 py-3.5 text-sm font-semibold text-white transition duration-150 hover:brightness-110 active:brightness-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2"
         >
           로그인
         </button>
@@ -55,7 +81,7 @@ export default function LoginPage() {
         <button
           type="button"
           onClick={() => navigate("/signup")}
-          className="font-semibold text-yellow-600 hover:underline dark:text-yellow-400"
+          className="font-semibold text-brand-600 hover:underline dark:text-brand-400"
         >
           회원가입
         </button>
@@ -67,17 +93,18 @@ export default function LoginPage() {
         <div className="h-px flex-1 bg-neutral-200 dark:bg-neutral-800" />
       </div>
 
-      <div className="flex flex-col gap-2.5">
+      <div className="flex items-center justify-center gap-4">
         <button
           type="button"
           onClick={() => {
             login()
             navigate("/my")
           }}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#FEE500] py-3 text-sm font-medium text-neutral-900 transition-opacity duration-150 hover:opacity-90 active:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2"
+          aria-label="카카오로 시작하기"
+          title="카카오로 시작하기"
+          className="neu-sm neu-pressable flex h-14 w-14 items-center justify-center rounded-full bg-[#FEE500] text-neutral-900 transition-opacity duration-150 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2"
         >
-          <MessageCircle size={18} fill="currentColor" className="text-neutral-900" />
-          카카오로 시작하기
+          <MessageCircle size={22} fill="currentColor" />
         </button>
         <button
           type="button"
@@ -85,10 +112,11 @@ export default function LoginPage() {
             login()
             navigate("/my")
           }}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#03C75A] py-3 text-sm font-medium text-white transition-opacity duration-150 hover:opacity-90 active:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2"
+          aria-label="네이버로 시작하기"
+          title="네이버로 시작하기"
+          className="neu-sm neu-pressable flex h-14 w-14 items-center justify-center rounded-full bg-[#03C75A] text-white transition-opacity duration-150 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2"
         >
-          <span className="flex h-[18px] w-[18px] items-center justify-center text-[13px] font-bold leading-none">N</span>
-          네이버로 시작하기
+          <span className="text-lg font-bold leading-none">N</span>
         </button>
         <button
           type="button"
@@ -96,12 +124,11 @@ export default function LoginPage() {
             login()
             navigate("/my")
           }}
-          className="flex w-full items-center justify-center gap-2 rounded-xl border border-neutral-200 bg-white py-3 text-sm font-medium text-neutral-700 transition-colors duration-150 hover:bg-neutral-50 active:bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800"
+          aria-label="구글로 시작하기"
+          title="구글로 시작하기"
+          className="neu-sm neu-pressable flex h-14 w-14 items-center justify-center rounded-full bg-white text-neutral-500 transition-colors duration-150 hover:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 dark:bg-[#1A2E3D] dark:hover:bg-neutral-800"
         >
-          <span className="flex h-[18px] w-[18px] items-center justify-center text-[13px] font-bold leading-none text-neutral-500">
-            G
-          </span>
-          구글로 시작하기
+          <span className="text-lg font-bold leading-none">G</span>
         </button>
       </div>
     </div>

@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom"
 import { ArrowLeft, Search, TrendingUp, TrendingDown, Minus } from "lucide-react"
-import { recentSearches, popularSearchTerms } from "../mock/data"
+import { popularSearchTerms } from "../mock/data"
+import { useActivity } from "../store/ActivityContext"
 
 interface SearchTermsListPageProps {
   variant: "recent" | "popular"
@@ -8,6 +9,7 @@ interface SearchTermsListPageProps {
 
 export default function SearchTermsListPage({ variant }: SearchTermsListPageProps) {
   const navigate = useNavigate()
+  const { recentSearches } = useActivity()
 
   const startSearch = (q: string) => {
     navigate("/collecting", { state: { query: q } })
@@ -19,7 +21,7 @@ export default function SearchTermsListPage({ variant }: SearchTermsListPageProp
         <button
           onClick={() => navigate(-1)}
           aria-label="뒤로 가기"
-          className="rounded-full p-1 text-neutral-500 transition-colors duration-150 hover:text-neutral-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 dark:text-neutral-400 dark:hover:text-neutral-200"
+          className="-m-3 rounded-full p-3 text-neutral-500 transition-colors duration-150 hover:text-neutral-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 dark:text-neutral-400 dark:hover:text-neutral-200"
         >
           <ArrowLeft size={20} />
         </button>
@@ -34,7 +36,7 @@ export default function SearchTermsListPage({ variant }: SearchTermsListPageProp
             <li key={term}>
               <button
                 onClick={() => startSearch(term)}
-                className="flex w-full items-center gap-3 rounded-xl px-2 py-2.5 text-left transition-colors duration-150 hover:bg-neutral-50 active:bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 dark:hover:bg-neutral-800 dark:active:bg-neutral-700"
+                className="flex w-full items-center gap-3 rounded-xl px-2 py-2.5 text-left transition-colors duration-150 hover:bg-neutral-50 active:bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 dark:hover:bg-neutral-800 dark:active:bg-neutral-700"
               >
                 <Search size={16} className="shrink-0 text-neutral-400" />
                 <span className="text-sm text-neutral-800 dark:text-neutral-200">{term}</span>
@@ -48,9 +50,9 @@ export default function SearchTermsListPage({ variant }: SearchTermsListPageProp
             <li key={item.term}>
               <button
                 onClick={() => startSearch(item.term)}
-                className="flex w-full items-center gap-3 rounded-xl px-2 py-2.5 text-left transition-colors duration-150 hover:bg-neutral-50 active:bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 dark:hover:bg-neutral-800 dark:active:bg-neutral-700"
+                className="flex w-full items-center gap-3 rounded-xl px-2 py-2.5 text-left transition-colors duration-150 hover:bg-neutral-50 active:bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 dark:hover:bg-neutral-800 dark:active:bg-neutral-700"
               >
-                <span className="w-4 text-sm font-semibold text-yellow-500">{i + 1}</span>
+                <span className="w-4 text-sm font-semibold text-brand-500">{i + 1}</span>
                 <span className="flex-1 text-sm text-neutral-800 dark:text-neutral-200">{item.term}</span>
                 {item.change === "up" && (
                   <span className="flex items-center gap-0.5 text-xs font-medium text-rose-500">

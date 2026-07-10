@@ -1,0 +1,50 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="hexGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFB347"/>
+      <stop offset="30%" stop-color="#FF6B9D"/>
+      <stop offset="60%" stop-color="#C06CFF"/>
+      <stop offset="100%" stop-color="#4EA8FF"/>
+    </linearGradient>
+    <linearGradient id="leftFacet" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFC25C"/>
+      <stop offset="100%" stop-color="#FF7CB3"/>
+    </linearGradient>
+    <linearGradient id="rightFacet" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#D183FF"/>
+      <stop offset="100%" stop-color="#5CB3FF"/>
+    </linearGradient>
+    <linearGradient id="bottomFacet" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FF8FC4"/>
+      <stop offset="100%" stop-color="#9B7CFF"/>
+    </linearGradient>
+    <linearGradient id="highlight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.55"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Hexagon outer shape -->
+  <polygon points="100,10 178,55 178,145 100,190 22,145 22,55"
+           fill="url(#hexGradient)"/>
+
+  <!-- Left facet -->
+  <polygon points="100,10 22,55 22,145 100,190 100,100"
+           fill="url(#leftFacet)" opacity="0.85"/>
+
+  <!-- Right facet -->
+  <polygon points="100,10 178,55 178,145 100,190 100,100"
+           fill="url(#rightFacet)" opacity="0.75"/>
+
+  <!-- Bottom facet shading -->
+  <polygon points="22,145 100,190 178,145 100,120"
+           fill="url(#bottomFacet)" opacity="0.4"/>
+
+  <!-- Center highlight triangle (light reflection) -->
+  <polygon points="100,45 140,100 100,145 60,100"
+           fill="url(#highlight)"/>
+
+  <!-- Small sparkle accents -->
+  <circle cx="150" cy="35" r="4" fill="#FFFFFF" opacity="0.9"/>
+  <circle cx="165" cy="50" r="2.5" fill="#FFFFFF" opacity="0.7"/>
+</svg>

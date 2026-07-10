@@ -25,3 +25,6 @@ build/
 # Local cache
 .cache/
 tmp/
+
+.vercel
+.env*

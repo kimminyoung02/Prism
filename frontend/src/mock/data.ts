@@ -1,11 +1,5 @@
-export interface ChannelProgress {
-  key: "blog" | "youtube" | "community" | "shopping"
-  label: string
-  total: number
-}
-
 export interface ReviewSource {
-  key: "blog" | "youtube" | "community"
+  key: "blog" | "youtube"
   label: string
   count: number
 }
@@ -23,6 +17,7 @@ export interface ReviewItem {
   stat: string
   /** 원문 URL. 실제 API 연동 전까지는 채널별 더미 링크를 사용. */
   url: string
+  thumbnail?: string
 }
 
 export interface MyListItem {
@@ -33,49 +28,6 @@ export interface MyListItem {
   reviewCount?: number
   aiComment?: string
 }
-
-export const myReviews: MyListItem[] = [
-  {
-    id: "mr1",
-    title: "리넨 오버핏 자켓",
-    date: "2026.07.06",
-    rating: 4.5,
-    reviewCount: 89,
-    aiComment: "가볍고 시원한 착용감에 만족도가 높은 편이에요",
-  },
-  {
-    id: "mr2",
-    title: "와이드 데님 팬츠",
-    date: "2026.06.29",
-    rating: 4,
-    reviewCount: 62,
-    aiComment: "핏이 예쁘다는 의견이 많지만 기장은 수선이 필요할 수 있어요",
-  },
-  {
-    id: "mr3",
-    title: "니트 가디건",
-    date: "2026.06.18",
-    rating: 3.5,
-    reviewCount: 45,
-    aiComment: "가성비가 좋다는 의견이 많아요",
-  },
-  {
-    id: "mr4",
-    title: "린넨 셔츠",
-    date: "2026.06.05",
-    rating: 4.5,
-    reviewCount: 71,
-    aiComment: "구김이 잘 가지만 소재감이 좋다는 의견이 많아요",
-  },
-  {
-    id: "mr5",
-    title: "크로스바디백",
-    date: "2026.05.27",
-    rating: 4,
-    reviewCount: 38,
-    aiComment: "데일리로 활용하기 좋다는 의견이 많아요",
-  },
-]
 
 export interface PopularSearchTerm {
   term: string
@@ -90,45 +42,59 @@ export const popularSearchTerms: PopularSearchTerm[] = [
   { term: "폴로 랄프로렌 가디건", change: "down", diff: 3 },
   { term: "코치 크로스바디백", change: "up", diff: 4 },
   { term: "나이키 에어포스1 스니커즈", change: "down", diff: 1 },
+  { term: "자라 오버사이즈 블레이저", change: "up", diff: 5 },
+  { term: "아디다스 트랙탑", change: "same" },
+  { term: "탑텐 반팔 티셔츠", change: "up", diff: 2 },
+  { term: "뉴발란스 993 스니커즈", change: "down", diff: 2 },
 ]
 
 export const todaysPick = {
   title: "리넨 오버핏 자켓",
-  subtitle: "이번 주 가장 많이 분석된 제품이에요",
+  subtitle: "지금 만족도가 가장 높은",
 }
-
-export const recentlyViewed: MyListItem[] = [
-  { id: "rv1", title: "여름 원피스", date: "2026.07.05", rating: 4 },
-  { id: "rv2", title: "와이드 팬츠", date: "2026.07.03", rating: 3.5 },
-  { id: "rv3", title: "스니커즈", date: "2026.06.30", rating: 4.5 },
-  { id: "rv4", title: "가디건", date: "2026.06.22", rating: 4 },
-]
-
-export const recentSearches = [
-  "무신사 스탠다드 오버핏 린넨 자켓",
-  "자라 와이드 데님 팬츠",
-  "유니클로 크루넥 가디건",
-]
 
 export const defaultQuery = "리넨 오버핏 자켓"
 
-export const channelProgress: ChannelProgress[] = [
-  { key: "blog", label: "블로그", total: 32 },
-  { key: "youtube", label: "유튜브", total: 18 },
-  { key: "community", label: "커뮤니티", total: 24 },
-  { key: "shopping", label: "쇼핑몰", total: 15 },
+export const lensIdentifiedProduct = {
+  brand: "H&M",
+  name: "린넨 오버핏 셔츠",
+  confidence: "일치율 높음",
+}
+
+export const appVersion = "v1.0.0"
+
+export const termsOfServiceText = [
+  "본 약관은 Prism(이하 '회사')이 제공하는 AI 리뷰 분석 서비스의 이용과 관련하여 회사와 이용자 간의 권리, 의무 및 책임사항을 규정함을 목적으로 합니다.",
+  "이용자는 서비스 이용 시 관련 법령과 본 약관의 내용을 준수하여야 하며, 서비스를 통해 제공되는 분석 결과는 참고용 정보로 실제 구매 결정의 최종 책임은 이용자에게 있습니다.",
+  "회사는 서비스의 안정적인 제공을 위해 노력하며, 서비스 내용의 변경이 필요한 경우 사전에 공지합니다.",
 ]
 
-export const analysisStepLabels = [
-  "리뷰 수집완료",
-  "전처리중",
-  "핵심 키워드 추출",
-  "감성·의견 분석",
-  "요약 생성중",
-  "분석완료",
+export const privacyPolicyText = [
+  "Prism은 이용자의 개인정보를 소중히 다루며, 관련 법령에 따라 최소한의 개인정보만을 수집·이용합니다.",
+  "수집하는 개인정보는 이메일, 닉네임, 서비스 이용 기록이며, 회원 관리 및 서비스 제공 목적으로만 사용됩니다.",
+  "이용자는 언제든지 자신의 개인정보 열람, 수정, 삭제를 요청할 수 있으며, 회원 탈퇴를 통해 개인정보 수집·이용에 대한 동의를 철회할 수 있습니다.",
 ]
 
-export const totalReviewCount = channelProgress.reduce((sum, c) => sum + c.total, 0)
+export interface AnalysisStepInfo {
+  key: "collect" | "clean" | "keyword" | "sentiment" | "summary"
+  title: string
+  description: string
+}
+
+export const analysisSteps: AnalysisStepInfo[] = [
+  { key: "collect", title: "리뷰 수집 중", description: "다양한 채널에서 리뷰를 모으는 중" },
+  { key: "clean", title: "전처리 중", description: "중복 제거 및 텍스트 정리 중" },
+  { key: "keyword", title: "키워드 추출 중", description: "핵심 키워드를 찾는 중" },
+  { key: "sentiment", title: "감정 분석 중", description: "긍정/부정 비율을 분석 중" },
+  { key: "summary", title: "요약 생성 중", description: "한 줄 요약을 만드는 중" },
+]
+
+export const reviewSources: ReviewSource[] = [
+  { key: "blog", label: "블로그", count: 32 },
+  { key: "youtube", label: "유튜브", count: 18 },
+]
+
+export const totalReviewCount = reviewSources.reduce((sum, s) => sum + s.count, 0)
 
 export const analyzedDate = "2026.07.06"
 
@@ -137,12 +103,6 @@ export const aiConclusion = {
   summary:
     "가볍고 시원한 착용감에 만족도가 높은 편이에요. 다만 기장이 길다는 의견도 있었어요.",
 }
-
-export const reviewSources: ReviewSource[] = [
-  { key: "blog", label: "블로그", count: 32 },
-  { key: "youtube", label: "유튜브", count: 18 },
-  { key: "community", label: "커뮤니티", count: 24 },
-]
 
 export const pros = [
   "소재가 가볍고 통기성이 좋다는 의견이 많아요",
@@ -165,22 +125,3 @@ export const keywords: Keyword[] = [
   { word: "가성비", count: 7 },
 ]
 
-export const reviewsByChannel: Record<"blog" | "youtube" | "community", ReviewItem[]> = {
-  blog: [
-    { id: "b1", title: "리넨 자켓 한 달 착용 후기", source: "데일리룩 블로그", date: "2026.06.28", stat: "댓글 12", url: "https://www.naver.com" },
-    { id: "b2", title: "오버핏 자켓, 키 작은 사람도 괜찮을까?", source: "패션다이어리", date: "2026.06.24", stat: "댓글 8", url: "https://www.naver.com" },
-    { id: "b3", title: "여름 자켓 코디 이렇게 해봤어요", source: "스타일노트", date: "2026.06.19", stat: "댓글 5", url: "https://www.naver.com" },
-    { id: "b4", title: "선물용으로 고민중이라면 참고하세요", source: "리뷰노트", date: "2026.06.11", stat: "댓글 3", url: "https://www.naver.com" },
-  ],
-  youtube: [
-    { id: "y1", title: "리넨 오버핏 자켓 솔직 후기 (내돈내산)", source: "패션리뷰채널", date: "2026.06.30", stat: "조회 84,201", url: "https://www.youtube.com" },
-    { id: "y2", title: "이 가격 값 할까? 3개월 착용기", source: "잇템언박싱", date: "2026.06.22", stat: "조회 51,730", url: "https://www.youtube.com" },
-    { id: "y3", title: "린넨 자켓 세탁 후 수축 테스트 해봤습니다", source: "패브릭케어", date: "2026.06.15", stat: "조회 33,402", url: "https://www.youtube.com" },
-  ],
-  community: [
-    { id: "c1", title: "리넨 자켓 사이즈 어떻게 골라야 하나요?", source: "패션카페", date: "2026.06.27", stat: "좋아요 41", url: "https://www.naver.com" },
-    { id: "c2", title: "생일선물로 받았는데 만족도 공유합니다", source: "여성시대", date: "2026.06.20", stat: "좋아요 63", url: "https://www.naver.com" },
-    { id: "c3", title: "직구랑 국내 정발 차이 있나요?", source: "클리앙", date: "2026.06.13", stat: "좋아요 27", url: "https://www.naver.com" },
-    { id: "c4", title: "기장 길다는 말이 많던데 실제로 어떤가요", source: "네이트판", date: "2026.06.08", stat: "좋아요 19", url: "https://www.naver.com" },
-  ],
-}

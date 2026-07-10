@@ -24,7 +24,7 @@ export default function ScrapButton({ item, size = 20, className = "" }: ScrapBu
         toggleScrap(item)
         setPopping(true)
       }}
-      className={`inline-flex shrink-0 items-center justify-center ${className}`}
+      className={`relative inline-flex shrink-0 items-center justify-center before:absolute before:-inset-3 before:content-[''] ${className}`}
     >
       <span
         className={"relative inline-block " + (popping ? "animate-scrap-pop" : "")}
@@ -35,7 +35,7 @@ export default function ScrapButton({ item, size = 20, className = "" }: ScrapBu
         <Bookmark
           size={size}
           className={
-            "absolute inset-0 text-yellow-400 transition-opacity duration-300 " +
+            "absolute inset-0 text-brand-400 transition-opacity duration-300 " +
             (scrapped ? "opacity-100" : "opacity-0")
           }
           fill="currentColor"

@@ -16,7 +16,7 @@ export default function StarRating({ rating, max = 5, size = 20 }: StarRatingPro
             <Star size={size} className="text-neutral-300 dark:text-neutral-600" fill="currentColor" stroke="none" />
             {fill > 0 && (
               <div className="absolute inset-0 overflow-hidden" style={{ clipPath: `inset(0 ${100 - fill * 100}% 0 0)` }}>
-                <Star size={size} className="text-yellow-400" fill="currentColor" stroke="none" />
+                <Star size={size} className="text-brand-500 dark:text-brand-300" fill="currentColor" stroke="none" />
               </div>
             )}
           </div>

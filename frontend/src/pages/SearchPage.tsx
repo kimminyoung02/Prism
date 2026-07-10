@@ -1,13 +1,29 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { Search, Camera, Bell, Sparkles, ChevronRight, Shirt, TrendingUp, TrendingDown, Minus } from "lucide-react"
-import PrismGraphic from "../components/PrismGraphic"
-import StarRating from "../components/StarRating"
-import { recentSearches, popularSearchTerms, myReviews, todaysPick } from "../mock/data"
+import {
+  Search,
+  Camera,
+  Bell,
+  ChevronRight,
+  Star,
+  Clock,
+  BarChart2,
+  MapPin,
+  Flame,
+  TrendingUp,
+  TrendingDown,
+  Minus,
+} from "lucide-react"
+import { popularSearchTerms, todaysPick } from "../mock/data"
+import { useActivity } from "../store/ActivityContext"
+import ProductThumbnail from "../components/ProductThumbnail"
+import prismLogo from "../assets/prism-logo.svg"
+import prismWordmark from "../assets/prism-wordmark.png"
 
 export default function SearchPage() {
   const [query, setQuery] = useState("")
   const navigate = useNavigate()
+  const { recentSearches, viewedProducts } = useActivity()
 
   const startSearch = (q: string) => {
     const trimmed = q.trim()
@@ -16,193 +32,208 @@ export default function SearchPage() {
   }
 
   return (
-    <div className="mx-auto flex min-h-svh max-w-md flex-col gap-8 px-5 pb-24 pt-8">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight text-yellow-500">Prism</h1>
-        <button
-          type="button"
-          onClick={() => navigate("/my/notifications")}
-          aria-label="알림"
-          className="rounded-full p-1.5 text-neutral-400 transition-colors duration-150 hover:text-neutral-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 dark:hover:text-neutral-200"
-        >
-          <Bell size={20} />
-        </button>
-      </div>
-
-      <div className="flex items-center justify-between gap-3">
-        <div>
-          <h2 className="text-lg font-bold leading-snug text-neutral-900 dark:text-neutral-100">
-            좋은 선택은,
-            <br />
-            좋은 리뷰에서 시작됩니다.
-          </h2>
-          <p className="mt-1.5 text-sm text-neutral-500 dark:text-neutral-400">
-            수백 개의 리뷰를 Prism이 한눈에 정리해드려요
-          </p>
+    <div className="mx-auto flex min-h-svh max-w-md flex-col bg-surface pb-20 dark:bg-[#0D1B24]">
+      <div className="rounded-b-[2rem] bg-gradient-to-b from-brand-500 to-brand-400 px-5 pb-7 pt-7 shadow-lg shadow-brand-500/20">
+        <div className="flex items-center justify-between">
+          <h1 className="flex items-center gap-2">
+            <img src={prismLogo} alt="" className="h-8 w-8" />
+            <img src={prismWordmark} alt="Prism" className="h-6 w-auto" />
+          </h1>
+          <button
+            type="button"
+            onClick={() => navigate("/my/notifications")}
+            aria-label="알림"
+            className="-m-3 rounded-full p-3 text-white/80 transition-colors duration-150 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-500"
+          >
+            <Bell size={20} />
+          </button>
         </div>
-        <PrismGraphic />
-      </div>
 
-      <div className="flex flex-col gap-3">
         <form
           onSubmit={(e) => {
             e.preventDefault()
             startSearch(query)
           }}
-          className="flex items-center gap-1 rounded-full border border-neutral-200 bg-white py-2 pl-4 pr-2 shadow-sm transition-colors focus-within:border-yellow-400 focus-within:ring-2 focus-within:ring-yellow-400/20 dark:border-neutral-700 dark:bg-neutral-900"
+          className="neu mt-6 flex items-center gap-1 rounded-full bg-white py-2 pl-4 pr-2 focus-within:ring-2 focus-within:ring-white/60"
         >
-          <Search size={20} className="shrink-0 text-neutral-400" />
+          <Search size={18} className="shrink-0 text-neutral-400" />
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="제품명, 브랜드, 키워드로 검색해보세요"
-            className="w-full bg-transparent px-2 text-sm text-neutral-900 outline-none placeholder:text-neutral-400 dark:text-neutral-100"
+            placeholder="제품명, 브랜드, 키워드를 검색해보세요"
+            className="w-full bg-transparent px-2 text-sm text-neutral-900 outline-none placeholder:text-neutral-400"
           />
           <button
             type="button"
-            disabled
-            title="스마트 렌즈 · Prism Lens (준비중)"
-            className="flex h-10 w-10 shrink-0 cursor-not-allowed items-center justify-center rounded-full text-neutral-300 disabled:opacity-60 dark:text-neutral-600"
+            onClick={() => navigate("/lens")}
+            aria-label="스마트 렌즈 · Prism Lens"
+            title="스마트 렌즈 · Prism Lens"
+            className="neu-sm neu-pressable flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white text-brand-500 transition-colors duration-150 hover:text-brand-600"
           >
-            <Camera size={18} />
-          </button>
-          <button
-            type="submit"
-            className="shrink-0 rounded-full bg-yellow-400 px-4 py-2 text-xs font-semibold text-neutral-900 transition-colors duration-150 hover:bg-yellow-500 active:bg-yellow-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2"
-          >
-            검색
+            <Camera size={15} />
           </button>
         </form>
-
-        <div
-          title="준비중"
-          className="flex cursor-not-allowed items-center gap-3 rounded-2xl border border-neutral-200 bg-neutral-50 px-4 py-3 opacity-70 dark:border-neutral-800 dark:bg-neutral-900"
-        >
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-neutral-200 dark:bg-neutral-700">
-            <Sparkles size={16} className="text-neutral-500 dark:text-neutral-300" />
-          </div>
-          <div className="min-w-0 flex-1">
-            <p className="text-sm font-semibold text-neutral-600 dark:text-neutral-300">Prism Lens</p>
-            <p className="truncate text-xs text-neutral-400">사진을 찍으면 AI가 제품을 찾아드려요</p>
-          </div>
-          <span className="shrink-0 rounded-full bg-neutral-200 px-2 py-0.5 text-[10px] font-medium text-neutral-500 dark:bg-neutral-700 dark:text-neutral-300">
-            준비중
-          </span>
-        </div>
       </div>
 
-      <section className="flex flex-col gap-3">
-        <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-neutral-500 dark:text-neutral-400">최근 검색</h2>
-          <button
-            onClick={() => navigate("/search-terms/recent")}
-            className="flex items-center text-xs text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200"
-          >
-            전체보기
-            <ChevronRight size={14} />
-          </button>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {recentSearches.map((term) => (
-            <button
-              key={term}
-              onClick={() => startSearch(term)}
-              className="rounded-full border border-neutral-200 px-3 py-1.5 text-sm text-neutral-700 transition-colors duration-150 hover:bg-neutral-50 active:bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:active:bg-neutral-700"
-            >
-              {term}
-            </button>
-          ))}
-        </div>
-      </section>
-
-      <section className="flex flex-col gap-3">
-        <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-neutral-500 dark:text-neutral-400">최근 분석한 제품</h2>
-          <button
-            onClick={() => navigate("/my/reviews")}
-            className="flex items-center text-xs text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200"
-          >
-            전체보기
-            <ChevronRight size={14} />
-          </button>
-        </div>
-        <div className="flex flex-col gap-3">
-          {myReviews.slice(0, 3).map((item) => (
-            <button
-              key={item.id}
-              onClick={() => navigate("/result", { state: { query: item.title } })}
-              className="flex items-center gap-3 rounded-2xl border border-neutral-200 p-3 text-left transition-colors duration-150 hover:bg-neutral-50 active:bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 dark:border-neutral-800 dark:hover:bg-neutral-800 dark:active:bg-neutral-700"
-            >
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-neutral-100 dark:bg-neutral-800">
-                <Shirt size={24} className="text-neutral-400" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium text-neutral-900 dark:text-neutral-100">{item.title}</p>
-                <div className="mt-0.5 flex items-center gap-1.5">
-                  <StarRating rating={item.rating} size={12} />
-                  <span className="text-xs text-neutral-400">리뷰 {item.reviewCount}개</span>
-                </div>
-                <p className="mt-0.5 truncate text-xs text-neutral-400">{item.aiComment}</p>
-              </div>
-            </button>
-          ))}
-        </div>
-      </section>
-
-      <section className="flex flex-col gap-3">
-        <h2 className="text-sm font-semibold text-neutral-500 dark:text-neutral-400">오늘의 Prism Pick</h2>
+      <div className="flex flex-col gap-5 px-5 pt-4">
         <button
-          onClick={() => navigate("/collecting", { state: { query: todaysPick.title } })}
-          className="flex items-center gap-4 rounded-2xl bg-yellow-50 p-4 text-left transition-colors duration-150 hover:bg-yellow-100 active:bg-yellow-200/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 dark:bg-yellow-500/10 dark:hover:bg-yellow-500/15"
+          type="button"
+          onClick={() => navigate("/lens")}
+          className="neu neu-pressable flex items-center gap-3 rounded-2xl bg-brand-50 p-3 text-left transition-colors duration-150 dark:bg-brand-500/10"
         >
-          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl bg-white dark:bg-neutral-900">
-            <Shirt size={28} className="text-yellow-500" />
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-100 dark:bg-brand-500/20">
+            <Camera size={16} className="text-brand-600 dark:text-brand-400" />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">{todaysPick.title}</p>
-            <p className="mt-0.5 truncate text-xs text-neutral-500 dark:text-neutral-400">{todaysPick.subtitle}</p>
+            <p className="text-sm font-semibold text-neutral-800 dark:text-neutral-200">Prism Lens</p>
+            <p className="truncate text-xs text-neutral-500 dark:text-neutral-400">
+              사진을 찍으면 AI가 제품을 찾아드려요
+            </p>
           </div>
+          <ChevronRight size={16} className="shrink-0 text-neutral-300 dark:text-neutral-600" />
         </button>
-      </section>
 
-      <section className="flex flex-col gap-3">
-        <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-neutral-500 dark:text-neutral-400">인기 검색어</h2>
-          <button
-            onClick={() => navigate("/search-terms/popular")}
-            className="flex items-center text-xs text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200"
-          >
-            전체보기
-            <ChevronRight size={14} />
-          </button>
-        </div>
-        <ol className="flex flex-col gap-1">
-          {popularSearchTerms.map((item, i) => (
-            <li key={item.term}>
+        <section className="flex flex-col gap-2">
+          <div className="flex items-center justify-between">
+            <h2 className="flex items-center gap-1.5 text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+              <Flame size={14} className="text-brand-500" />
+              인기 검색어
+            </h2>
+            <button
+              onClick={() => navigate("/search-terms/popular")}
+              className="flex items-center text-xs text-neutral-500 hover:text-neutral-600 dark:hover:text-neutral-200"
+            >
+              전체보기
+              <ChevronRight size={14} />
+            </button>
+          </div>
+          <div className="grid grid-cols-2 gap-1.5">
+            {popularSearchTerms.slice(0, 6).map((item, i) => (
               <button
+                key={item.term}
                 onClick={() => startSearch(item.term)}
-                className="flex w-full items-center gap-3 rounded-xl px-2 py-2.5 text-left transition-colors duration-150 hover:bg-neutral-50 active:bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 dark:hover:bg-neutral-800 dark:active:bg-neutral-700"
+                className="neu-sm neu-pressable flex items-center gap-1.5 rounded-xl bg-white px-2.5 py-2 text-left transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 dark:bg-[#1A2E3D]"
               >
-                <span className="w-4 text-sm font-semibold text-yellow-500">{i + 1}</span>
-                <span className="flex-1 text-sm text-neutral-800 dark:text-neutral-200">{item.term}</span>
+                <span
+                  className={
+                    "flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-[9px] font-bold " +
+                    (i < 3
+                      ? "bg-brand-500 text-white"
+                      : "bg-neutral-100 text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400")
+                  }
+                >
+                  {i + 1}
+                </span>
+                <span className="flex-1 truncate text-[11px] text-neutral-800 dark:text-neutral-200">{item.term}</span>
                 {item.change === "up" && (
-                  <span className="flex items-center gap-0.5 text-xs font-medium text-rose-500">
-                    <TrendingUp size={14} />
-                    {item.diff}
+                  <span className="flex shrink-0 items-center gap-0.5 text-xs font-medium text-rose-500">
+                    <TrendingUp size={11} />
                   </span>
                 )}
                 {item.change === "down" && (
-                  <span className="flex items-center gap-0.5 text-xs font-medium text-blue-500">
-                    <TrendingDown size={14} />
-                    {item.diff}
+                  <span className="flex shrink-0 items-center gap-0.5 text-xs font-medium text-blue-500">
+                    <TrendingDown size={11} />
                   </span>
                 )}
-                {item.change === "same" && <Minus size={14} className="text-neutral-300 dark:text-neutral-600" />}
+                {item.change === "same" && (
+                  <Minus size={11} className="shrink-0 text-neutral-300 dark:text-neutral-600" />
+                )}
               </button>
-            </li>
-          ))}
-        </ol>
-      </section>
+            ))}
+          </div>
+        </section>
+
+        <section className="flex flex-col gap-2">
+          <div className="flex items-center justify-between">
+            <h2 className="flex items-center gap-1.5 text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+              <BarChart2 size={14} className="text-neutral-400" />
+              최근 분석한 제품
+            </h2>
+            <button
+              onClick={() => navigate("/my/reviews")}
+              className="flex items-center text-xs text-neutral-500 hover:text-neutral-600 dark:hover:text-neutral-200"
+            >
+              전체보기
+              <ChevronRight size={14} />
+            </button>
+          </div>
+          {viewedProducts.length > 0 ? (
+            <div className="no-scrollbar -mx-5 flex gap-2 overflow-x-auto px-5 pb-1">
+              {viewedProducts.slice(0, 10).map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => navigate("/result", { state: { query: item.title } })}
+                  className="neu neu-pressable flex w-28 shrink-0 flex-col gap-1.5 rounded-2xl bg-white p-2 text-left transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 dark:bg-[#1A2E3D]"
+                >
+                  <ProductThumbnail title={item.title} className="h-20 w-full rounded-xl bg-neutral-100 dark:bg-neutral-800" />
+                  <p className="truncate text-xs font-semibold text-neutral-900 dark:text-neutral-100">{item.title}</p>
+                  <div className="flex items-center gap-1 text-[11px] text-neutral-500 dark:text-neutral-400">
+                    <Star size={10} className="text-brand-400" fill="currentColor" stroke="none" />
+                    <span>{item.rating}</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          ) : (
+            <p className="py-2 text-sm text-neutral-400 dark:text-neutral-500">아직 분석한 제품이 없어요</p>
+          )}
+        </section>
+
+        <section className="neu flex flex-col gap-2 rounded-2xl bg-gradient-to-br from-brand-50 to-brand-100/60 p-3 dark:from-brand-500/10 dark:to-brand-500/5">
+          <span className="neu-sm flex w-fit items-center gap-1 rounded-full bg-white px-2 py-0.5 text-[11px] font-semibold text-brand-600 dark:bg-[#1A2E3D] dark:text-brand-400">
+            <MapPin size={11} />
+            오늘의 Prism Pick
+          </span>
+          <button
+            onClick={() => navigate("/collecting", { state: { query: todaysPick.title } })}
+            className="flex items-center justify-between gap-3 text-left transition-opacity duration-150 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2"
+          >
+            <p className="leading-snug">
+              <span className="block text-xs font-medium text-neutral-600 dark:text-neutral-400">
+                {todaysPick.subtitle}
+              </span>
+              <span className="block text-sm font-bold text-neutral-900 dark:text-neutral-100">{todaysPick.title}</span>
+            </p>
+            <ProductThumbnail
+              title={todaysPick.title}
+              className="neu-sm h-11 w-11 rounded-xl bg-white dark:bg-[#1A2E3D]"
+              iconClassName="text-brand-500"
+              iconSize={20}
+            />
+          </button>
+        </section>
+
+        <section className="flex flex-col gap-2">
+          <div className="flex items-center justify-between">
+            <h2 className="flex items-center gap-1.5 text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+              <Clock size={14} className="text-neutral-400" />
+              최근 검색
+            </h2>
+            <button
+              onClick={() => navigate("/search-terms/recent")}
+              className="flex items-center text-xs text-neutral-500 hover:text-neutral-600 dark:hover:text-neutral-200"
+            >
+              전체보기
+              <ChevronRight size={14} />
+            </button>
+          </div>
+          {recentSearches.length > 0 ? (
+            <div className="no-scrollbar -mx-5 flex gap-2 overflow-x-auto px-5 pb-1">
+              {recentSearches.map((term) => (
+                <button
+                  key={term}
+                  onClick={() => startSearch(term)}
+                  className="neu-sm neu-pressable shrink-0 whitespace-nowrap rounded-full bg-white px-3.5 py-2 text-xs text-neutral-700 transition-transform duration-150 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 dark:bg-[#1A2E3D] dark:text-neutral-300"
+                >
+                  {term}
+                </button>
+              ))}
+            </div>
+          ) : (
+            <p className="py-2 text-sm text-neutral-400 dark:text-neutral-500">아직 검색한 제품이 없어요</p>
+          )}
+        </section>
+      </div>
     </div>
   )
 }

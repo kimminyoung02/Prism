@@ -1,6 +1,62 @@
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
 
+@theme {
+  --color-brand-50: #F2E6E6;
+  --color-brand-100: #B5C1D4;
+  --color-brand-300: #8D9ABE;
+  --color-brand-400: #6292BE;
+  --color-brand-500: #1B4561;
+  --color-brand-600: #011F25;
+  --color-brand-700: #011F25;
+  --color-surface: #F5F7FA;
+}
+
+html {
+  @apply bg-[#F0F0F0] dark:bg-neutral-900;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Neumorphism: shadow-only surfaces in light mode; dark mode adds a hairline border for clear separation against near-black backgrounds */
+.neu {
+  box-shadow: 6px 6px 14px rgba(163, 177, 198, 0.5), -6px -6px 14px rgba(255, 255, 255, 0.85);
+}
+.dark .neu {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 6px 6px 14px rgba(0, 0, 0, 0.55), -4px -4px 10px rgba(255, 255, 255, 0.03);
+}
+
+.neu-sm {
+  box-shadow: 3px 3px 8px rgba(163, 177, 198, 0.45), -3px -3px 8px rgba(255, 255, 255, 0.8);
+}
+.dark .neu-sm {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 3px 3px 8px rgba(0, 0, 0, 0.5), -3px -3px 8px rgba(255, 255, 255, 0.025);
+}
+
+.neu-inset {
+  box-shadow: inset 3px 3px 7px rgba(163, 177, 198, 0.5), inset -3px -3px 7px rgba(255, 255, 255, 0.85);
+}
+.dark .neu-inset {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), inset 3px 3px 7px rgba(0, 0, 0, 0.6), inset -3px -3px 7px rgba(255, 255, 255, 0.025);
+}
+
+.neu-pressable {
+  transition: box-shadow 0.15s ease-out;
+}
+.neu-pressable:active {
+  box-shadow: inset 3px 3px 7px rgba(163, 177, 198, 0.5), inset -3px -3px 7px rgba(255, 255, 255, 0.85);
+}
+.dark .neu-pressable:active {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), inset 3px 3px 7px rgba(0, 0, 0, 0.6), inset -3px -3px 7px rgba(255, 255, 255, 0.025);
+}
+
 @keyframes scrap-pop {
   0% {
     transform: scale(1);
@@ -15,4 +71,31 @@
 
 .animate-scrap-pop {
   animation: scrap-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes step-pop {
+  0% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-step-pop {
+  animation: step-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
