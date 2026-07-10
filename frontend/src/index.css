@@ -18,6 +18,16 @@ html {
   @apply bg-[#F0F0F0] dark:bg-neutral-900;
 }
 
+/* 모바일 앱처럼 스크롤은 그대로 되지만 스크롤바는 어디서도 보이지 않게 전역 적용 */
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}
+
 .no-scrollbar {
   scrollbar-width: none;
   -ms-overflow-style: none;
