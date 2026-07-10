@@ -6,6 +6,7 @@ import { useEngagement } from "../store/EngagementContext"
 import EngagementBar from "../components/EngagementBar"
 import CommentsPanel from "../components/CommentsPanel"
 import ShareModal from "../components/ShareModal"
+import ScrapButton from "../components/ScrapButton"
 
 export default function CommunityPostDetailPage() {
   const navigate = useNavigate()
@@ -52,13 +53,26 @@ export default function CommunityPostDetailPage() {
           <ArrowLeft size={20} />
         </button>
         <h1 className="flex-1 text-base font-bold text-neutral-900 dark:text-neutral-100">게시글</h1>
-        <button
-          onClick={() => setShareOpen(true)}
-          aria-label="공유"
-          className="-m-2 rounded-full p-2 text-neutral-400 transition-colors duration-150 hover:text-neutral-600 dark:hover:text-neutral-200"
-        >
-          <Share2 size={18} />
-        </button>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => setShareOpen(true)}
+            aria-label="공유"
+            className="-m-2 rounded-full p-2 text-neutral-400 transition-colors duration-150 hover:text-neutral-600 dark:hover:text-neutral-200"
+          >
+            <Share2 size={18} />
+          </button>
+          <ScrapButton
+            size={18}
+            item={{
+              id: `community:${post.id}`,
+              type: "review",
+              title: post.title,
+              subtitle: `커뮤니티 · ${post.timeLabel}`,
+              url: `${window.location.origin}/community/post?id=${post.id}`,
+              source: "community",
+            }}
+          />
+        </div>
       </div>
 
       <div className="flex flex-col gap-3">

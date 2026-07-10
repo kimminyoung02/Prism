@@ -45,7 +45,7 @@ export default function CommunityPage() {
 
   return (
     <div className="mx-auto flex min-h-svh max-w-md flex-col bg-surface pb-24 dark:bg-[#0D1B24]">
-      <div className="rounded-b-[2rem] bg-gradient-to-b from-brand-500 to-brand-400 px-5 pb-4 pt-7">
+      <div className="rounded-b-[2rem] bg-gradient-to-b from-brand-500 to-brand-400 px-5 pb-5 pt-8">
         <div className="flex items-center justify-between">
           <h1 className="text-lg font-bold text-white">커뮤니티</h1>
           <div className="flex items-center gap-4">
@@ -78,7 +78,7 @@ export default function CommunityPage() {
           />
         )}
 
-        <div className="mt-4 flex items-center gap-5 border-b border-white/20">
+        <div className="mt-6 flex items-center gap-5 border-b border-white/20">
           {([
             { key: "latest", label: "최신글" },
             { key: "popular", label: "인기글" },

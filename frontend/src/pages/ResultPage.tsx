@@ -189,6 +189,7 @@ export default function ResultPage() {
                 title: query,
                 subtitle: `리뷰 ${totalReviewCount}개 · 분석일 ${analyzedDate}`,
                 query,
+                rating: aiConclusion.rating,
               }}
             />
           </div>
@@ -345,6 +346,7 @@ export default function ResultPage() {
                             title: review.title,
                             subtitle: `${review.source} · ${review.date}`,
                             url: review.url,
+                            source: channel,
                           }}
                         />
                       </div>

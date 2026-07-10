@@ -7,8 +7,12 @@ export interface ScrapItem {
   subtitle: string
   /** product 타입: /result 로 돌아갈 때 쓸 검색어 */
   query?: string
+  /** product 타입: AI 종합 별점 */
+  rating?: number
   /** review 타입: 원문 링크 */
   url?: string
+  /** review 타입: 출처 (블로그/유튜브/커뮤니티) */
+  source?: "blog" | "youtube" | "community"
 }
 
 interface ScrapContextValue {
