@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { Search, Bell, Pencil, Heart, MessageCircle, Eye, X } from "lucide-react"
-import { useCommunity, SEED_COMMENTS, CATEGORY_STYLES, type CommunityPost } from "../store/CommunityContext"
+import { useCommunity, SEED_COMMENTS, CATEGORY_STYLES, POST_CATEGORIES, type CommunityPost, type PostCategory } from "../store/CommunityContext"
 import { useEngagement } from "../store/EngagementContext"
 
 const AVATAR_PALETTE = ["bg-sky-400", "bg-violet-400", "bg-amber-400", "bg-emerald-400", "bg-rose-400", "bg-indigo-400"]
@@ -21,6 +21,7 @@ export default function CommunityPage() {
   const [sortMode, setSortMode] = useState<SortMode>("latest")
   const [searchOpen, setSearchOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
+  const [categoryFilter, setCategoryFilter] = useState<PostCategory | "전체">("전체")
 
   useEffect(() => {
     posts.forEach((post) => ensureSeed(post.id, post.seedLikes, post.seedDislikes, SEED_COMMENTS[post.id]))
@@ -28,15 +29,17 @@ export default function CommunityPage() {
   }, [posts])
 
   const visiblePosts = useMemo(() => {
-    const filtered = searchTerm.trim()
+    let filtered = searchTerm.trim()
       ? posts.filter(
           (p) => p.title.includes(searchTerm.trim()) || p.content.includes(searchTerm.trim()),
         )
       : posts
 
+    if (categoryFilter !== "전체") filtered = filtered.filter((p) => p.category === categoryFilter)
+
     if (sortMode === "latest") return filtered
     return [...filtered].sort((a, b) => getRecord(b.id).likes - getRecord(a.id).likes)
-  }, [posts, sortMode, searchTerm, getRecord])
+  }, [posts, sortMode, searchTerm, categoryFilter, getRecord])
 
   const openPost = (post: CommunityPost) => navigate("/community/post", { state: { postId: post.id } })
 
@@ -45,7 +48,7 @@ export default function CommunityPage() {
       <div className="rounded-b-[2rem] bg-gradient-to-b from-brand-500 to-brand-400 px-5 pb-4 pt-7">
         <div className="flex items-center justify-between">
           <h1 className="text-lg font-bold text-white">커뮤니티</h1>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-4">
             <button
               type="button"
               onClick={() => setSearchOpen((v) => !v)}
@@ -96,7 +99,28 @@ export default function CommunityPage() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-3 px-5 pt-4">
+      <div className="flex gap-2 overflow-x-auto px-5 pt-4 pb-1">
+        {(["전체", ...POST_CATEGORIES] as const).map((c) => {
+          const selected = c === categoryFilter
+          return (
+            <button
+              key={c}
+              type="button"
+              onClick={() => setCategoryFilter(c)}
+              className={
+                "shrink-0 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-colors duration-150 " +
+                (selected
+                  ? "bg-brand-500 text-white"
+                  : "bg-white text-neutral-500 dark:bg-[#1A2E3D] dark:text-neutral-400")
+              }
+            >
+              {c}
+            </button>
+          )
+        })}
+      </div>
+
+      <div className="flex flex-col gap-3 px-5 pt-3">
         {visiblePosts.length === 0 && (
           <p className="py-8 text-center text-sm text-neutral-400 dark:text-neutral-500">게시글이 없어요</p>
         )}

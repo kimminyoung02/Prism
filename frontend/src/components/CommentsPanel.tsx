@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Heart, Send } from "lucide-react"
+import { Heart, ArrowUp } from "lucide-react"
 import { useEngagement, type EngagementComment } from "../store/EngagementContext"
 
 interface CommentRowProps {
@@ -59,15 +59,15 @@ function CommentRow({ id, comment, rootId, isReply, replyingId, replyDraft, onSt
             }}
             autoFocus
             placeholder={`@${comment.author}에게 답글`}
-            className="neu-inset min-w-0 flex-1 rounded-full bg-white px-3.5 py-1.5 text-xs text-neutral-900 outline-none placeholder:text-neutral-400 dark:bg-[#1A2E3D] dark:text-neutral-100"
+            className="min-w-0 flex-1 rounded-full bg-neutral-100 px-3.5 py-1.5 text-xs text-neutral-900 outline-none placeholder:text-neutral-400 dark:bg-white/5 dark:text-neutral-100"
           />
           <button
             type="button"
             onClick={() => onSubmitReply(rootId, comment.author)}
             aria-label="답글 등록"
-            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white transition-colors duration-150 hover:bg-brand-600"
+            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-600 text-white transition-colors duration-150 hover:bg-brand-500"
           >
-            <Send size={11} />
+            <ArrowUp size={13} />
           </button>
         </div>
       )}
@@ -149,15 +149,15 @@ export default function CommentsPanel({ id }: { id: string }) {
             if (e.key === "Enter") submit()
           }}
           placeholder="댓글을 남겨보세요"
-          className="neu-inset min-w-0 flex-1 rounded-full bg-white px-3.5 py-2 text-xs text-neutral-900 outline-none placeholder:text-neutral-400 dark:bg-[#1A2E3D] dark:text-neutral-100"
+          className="min-w-0 flex-1 rounded-full bg-neutral-100 px-4 py-2.5 text-xs text-neutral-900 outline-none placeholder:text-neutral-400 dark:bg-white/5 dark:text-neutral-100"
         />
         <button
           type="button"
           onClick={submit}
           aria-label="댓글 등록"
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white transition-colors duration-150 hover:bg-brand-600"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-600 text-white transition-colors duration-150 hover:bg-brand-500"
         >
-          <Send size={13} />
+          <ArrowUp size={15} />
         </button>
       </div>
     </div>
