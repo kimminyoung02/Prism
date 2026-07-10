@@ -106,9 +106,9 @@ export default function FavoritesPage() {
 
   return (
     <div className="mx-auto flex min-h-svh max-w-md flex-col bg-surface pb-24 dark:bg-[#0D1B24]">
-      <div className="rounded-b-[2rem] bg-gradient-to-b from-brand-500 to-brand-400 px-5 pb-8 pt-8">
+      <div className="rounded-b-[2rem] bg-gradient-to-b from-brand-500 to-brand-400 px-5 pb-5 pt-8">
         <h1 className="text-lg font-bold text-white">즐겨찾기</h1>
-        <div className="mt-5 flex items-center gap-5 border-b border-white/20">
+        <div className="mt-6 flex items-center gap-5 border-b border-white/20">
           {([
             { key: "product", label: "찜한 제품" },
             { key: "review", label: "찜한 리뷰" },
