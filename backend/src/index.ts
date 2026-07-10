@@ -1,6 +1,7 @@
 import "dotenv/config"
 import cors from "cors"
 import express from "express"
+import { createHash } from "node:crypto"
 
 const app = express()
 const port = process.env.PORT ?? 3001
@@ -28,6 +29,11 @@ function stripHtml(text: string) {
 function formatPostDate(yyyymmdd: string) {
   if (!/^\d{8}$/.test(yyyymmdd)) return yyyymmdd
   return `${yyyymmdd.slice(0, 4)}.${yyyymmdd.slice(4, 6)}.${yyyymmdd.slice(6, 8)}`
+}
+
+/** 검색 결과 내 배열 인덱스가 아니라, 실제 글의 고유 URL을 해시해 항상 같은 글에는 같은 id가 나오도록 함. */
+function stableReviewId(prefix: string, uniqueSource: string) {
+  return `${prefix}-${createHash("sha1").update(uniqueSource).digest("hex").slice(0, 16)}`
 }
 
 interface NaverBlogItem {
@@ -71,8 +77,8 @@ app.get("/api/search/blog", async (req, res) => {
     }
 
     const data = (await naverRes.json()) as { items?: NaverBlogItem[] }
-    const items = (data.items ?? []).map((item, i) => ({
-      id: `naver-blog-${i}`,
+    const items = (data.items ?? []).map((item) => ({
+      id: stableReviewId("naver-blog", item.link),
       title: stripHtml(item.title),
       source: item.bloggername,
       date: formatPostDate(item.postdate),
