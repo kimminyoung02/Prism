@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from "react-router-dom"
 import {
   ArrowLeft,
   Search,
-  Bell,
   Newspaper,
   Clapperboard,
   CheckCircle2,
@@ -173,14 +172,6 @@ export default function ResultPage() {
             >
               <Search size={20} />
             </button>
-            <button
-              type="button"
-              onClick={() => navigate("/my/notifications")}
-              aria-label="알림"
-              className="-m-2 rounded-full p-2 text-white/80 transition-colors duration-150 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-500"
-            >
-              <Bell size={20} />
-            </button>
             <ScrapButton
               size={22}
               item={{
@@ -192,6 +183,14 @@ export default function ResultPage() {
                 rating: aiConclusion.rating,
               }}
             />
+            <button
+              type="button"
+              onClick={() => setShareUrl(`${window.location.origin}/?shared=product&query=${encodeURIComponent(query)}`)}
+              aria-label="공유"
+              className="-m-2 rounded-full p-2 text-white/80 transition-colors duration-150 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-500"
+            >
+              <Share2 size={20} />
+            </button>
           </div>
         </div>
 
@@ -325,7 +324,7 @@ export default function ResultPage() {
                 {channelReviews.map((review) => (
                   <div
                     key={review.id}
-                    className="neu-sm flex gap-3 rounded-2xl bg-white p-4 dark:bg-[#1A2E3D]"
+                    className="flex gap-3 rounded-2xl border border-neutral-100 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#1A2E3D] dark:shadow-none"
                   >
                     <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-neutral-100 dark:bg-neutral-800">
                       {review.thumbnail ? (
@@ -354,29 +353,33 @@ export default function ResultPage() {
                         {review.source} · {review.date}
                       </p>
                       <p className="line-clamp-2 text-xs text-neutral-500 dark:text-neutral-400">{review.stat}</p>
-                      <div className="flex items-center justify-between gap-2">
-                        <button
-                          type="button"
-                          onClick={() => openOriginalLink(review.url)}
-                          className="flex w-fit items-center gap-1 rounded text-xs font-medium text-neutral-600 transition-colors duration-150 hover:text-neutral-900 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 dark:text-neutral-300 dark:hover:text-neutral-100"
-                        >
-                          원문 가기
-                          <ExternalLink size={12} />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setShareUrl(review.url)}
-                          aria-label="공유"
-                          className="-m-1.5 rounded-full p-1.5 text-neutral-400 transition-colors duration-150 hover:text-neutral-600 dark:hover:text-neutral-200"
-                        >
-                          <Share2 size={14} />
-                        </button>
+
+                      <div className="flex items-center justify-between gap-2 border-t border-neutral-100 pt-2.5 dark:border-white/10">
+                        <EngagementBar
+                          id={review.id}
+                          showDislike={false}
+                          commentsOpen={expandedComments.has(review.id)}
+                          onToggleComments={() => toggleComments(review.id)}
+                        />
+                        <div className="flex items-center gap-3">
+                          <button
+                            type="button"
+                            onClick={() => openOriginalLink(review.url)}
+                            className="flex w-fit items-center gap-1 rounded text-xs font-medium text-neutral-600 transition-colors duration-150 hover:text-neutral-900 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 dark:text-neutral-300 dark:hover:text-neutral-100"
+                          >
+                            원문 가기
+                            <ExternalLink size={12} />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setShareUrl(review.url)}
+                            aria-label="공유"
+                            className="-m-1.5 rounded-full p-1.5 text-neutral-400 transition-colors duration-150 hover:text-neutral-600 dark:hover:text-neutral-200"
+                          >
+                            <Share2 size={14} />
+                          </button>
+                        </div>
                       </div>
-                      <EngagementBar
-                        id={review.id}
-                        commentsOpen={expandedComments.has(review.id)}
-                        onToggleComments={() => toggleComments(review.id)}
-                      />
                       {expandedComments.has(review.id) && <CommentsPanel id={review.id} />}
                     </div>
                   </div>

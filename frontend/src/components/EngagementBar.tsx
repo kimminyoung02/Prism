@@ -8,9 +8,10 @@ interface EngagementBarProps {
   seedDislikes?: number
   commentsOpen: boolean
   onToggleComments: () => void
+  showDislike?: boolean
 }
 
-export default function EngagementBar({ id, seedLikes = 0, seedDislikes = 0, commentsOpen, onToggleComments }: EngagementBarProps) {
+export default function EngagementBar({ id, seedLikes = 0, seedDislikes = 0, commentsOpen, onToggleComments, showDislike = true }: EngagementBarProps) {
   const { getRecord, ensureSeed, vote } = useEngagement()
 
   useEffect(() => {
@@ -21,44 +22,46 @@ export default function EngagementBar({ id, seedLikes = 0, seedDislikes = 0, com
   const record = getRecord(id)
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-4">
       <button
         type="button"
         onClick={() => vote(id, "like")}
         aria-pressed={record.myVote === "like"}
         aria-label="도움돼요"
         className={
-          "flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium transition-colors duration-150 " +
+          "flex items-center gap-1 text-xs font-medium transition-colors duration-150 " +
           (record.myVote === "like"
-            ? "bg-emerald-100 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400"
-            : "bg-neutral-100 text-neutral-500 hover:text-neutral-700 dark:bg-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-200")
+            ? "text-emerald-500"
+            : "text-neutral-400 hover:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-300")
         }
       >
-        <ThumbsUp size={13} fill={record.myVote === "like" ? "currentColor" : "none"} />
+        <ThumbsUp size={14} fill={record.myVote === "like" ? "currentColor" : "none"} />
         {record.likes}
       </button>
-      <button
-        type="button"
-        onClick={() => vote(id, "dislike")}
-        aria-pressed={record.myVote === "dislike"}
-        aria-label="별로예요"
-        className={
-          "flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium transition-colors duration-150 " +
-          (record.myVote === "dislike"
-            ? "bg-rose-100 text-rose-600 dark:bg-rose-500/15 dark:text-rose-400"
-            : "bg-neutral-100 text-neutral-500 hover:text-neutral-700 dark:bg-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-200")
-        }
-      >
-        <ThumbsDown size={13} fill={record.myVote === "dislike" ? "currentColor" : "none"} />
-        {record.dislikes}
-      </button>
+      {showDislike && (
+        <button
+          type="button"
+          onClick={() => vote(id, "dislike")}
+          aria-pressed={record.myVote === "dislike"}
+          aria-label="별로예요"
+          className={
+            "flex items-center gap-1 text-xs font-medium transition-colors duration-150 " +
+            (record.myVote === "dislike"
+              ? "text-rose-500"
+              : "text-neutral-400 hover:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-300")
+          }
+        >
+          <ThumbsDown size={14} fill={record.myVote === "dislike" ? "currentColor" : "none"} />
+          {record.dislikes}
+        </button>
+      )}
       <button
         type="button"
         onClick={onToggleComments}
         aria-expanded={commentsOpen}
-        className="flex items-center gap-1 rounded-full bg-neutral-100 px-2.5 py-1 text-xs font-medium text-neutral-500 transition-colors duration-150 hover:text-neutral-700 dark:bg-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-200"
+        className="flex items-center gap-1 text-xs font-medium text-neutral-400 transition-colors duration-150 hover:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-300"
       >
-        <MessageCircle size={13} />
+        <MessageCircle size={14} />
         댓글 {record.comments.length}개
       </button>
     </div>
