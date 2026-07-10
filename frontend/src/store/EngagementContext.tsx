@@ -5,6 +5,12 @@ export interface EngagementComment {
   author: string
   text: string
   timeLabel: string
+  likes: number
+  likedByMe: boolean
+  /** null = top-level comment. Otherwise points to the root top-level comment's id (max 2 levels deep). */
+  parentId: string | null
+  /** Set for replies: who this reply is addressed to, shown as "@닉네임". */
+  replyToAuthor: string | null
 }
 
 export interface EngagementRecord {
@@ -20,7 +26,8 @@ interface EngagementContextValue {
   getRecord: (id: string) => EngagementRecord
   ensureSeed: (id: string, likes: number, dislikes: number, comments?: EngagementComment[]) => void
   vote: (id: string, type: "like" | "dislike") => void
-  addComment: (id: string, text: string) => void
+  addComment: (id: string, text: string, parentId?: string, replyToAuthor?: string) => void
+  toggleCommentLike: (id: string, commentId: string) => void
 }
 
 const EngagementContext = createContext<EngagementContextValue | null>(null)
@@ -53,7 +60,7 @@ export function EngagementProvider({ children }: { children: ReactNode }) {
     })
   }, [])
 
-  const addComment = useCallback((id: string, text: string) => {
+  const addComment = useCallback((id: string, text: string, parentId?: string, replyToAuthor?: string) => {
     const trimmed = text.trim()
     if (!trimmed) return
     setRecords((prev) => {
@@ -63,15 +70,33 @@ export function EngagementProvider({ children }: { children: ReactNode }) {
         author: "prism_user",
         text: trimmed,
         timeLabel: "방금 전",
+        likes: 0,
+        likedByMe: false,
+        parentId: parentId ?? null,
+        replyToAuthor: replyToAuthor ?? null,
       }
       return { ...prev, [id]: { ...current, comments: [...current.comments, comment] } }
+    })
+  }, [])
+
+  const toggleCommentLike = useCallback((id: string, commentId: string) => {
+    setRecords((prev) => {
+      const current = prev[id] ?? EMPTY_RECORD
+      const comments = current.comments.map((c) => {
+        if (c.id !== commentId) return c
+        const likedByMe = !c.likedByMe
+        return { ...c, likedByMe, likes: c.likes + (likedByMe ? 1 : -1) }
+      })
+      return { ...prev, [id]: { ...current, comments } }
     })
   }, [])
 
   const getRecord = useCallback((id: string) => records[id] ?? EMPTY_RECORD, [records])
 
   return (
-    <EngagementContext.Provider value={{ getRecord, ensureSeed, vote, addComment }}>{children}</EngagementContext.Provider>
+    <EngagementContext.Provider value={{ getRecord, ensureSeed, vote, addComment, toggleCommentLike }}>
+      {children}
+    </EngagementContext.Provider>
   )
 }
 

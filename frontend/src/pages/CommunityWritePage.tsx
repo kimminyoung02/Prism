@@ -1,11 +1,12 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { ArrowLeft } from "lucide-react"
-import { useCommunity } from "../store/CommunityContext"
+import { useCommunity, POST_CATEGORIES, CATEGORY_STYLES, type PostCategory } from "../store/CommunityContext"
 
 export default function CommunityWritePage() {
   const navigate = useNavigate()
   const { addPost } = useCommunity()
+  const [category, setCategory] = useState<PostCategory>(POST_CATEGORIES[0])
   const [title, setTitle] = useState("")
   const [content, setContent] = useState("")
   const [error, setError] = useState<string | null>(null)
@@ -15,7 +16,7 @@ export default function CommunityWritePage() {
       setError("제목과 내용을 모두 입력해주세요")
       return
     }
-    addPost(title, content)
+    addPost(title, content, category)
     navigate("/community")
   }
 
@@ -33,6 +34,25 @@ export default function CommunityWritePage() {
       </div>
 
       <div className="flex flex-col gap-3">
+        <div className="flex gap-2">
+          {POST_CATEGORIES.map((c) => {
+            const style = CATEGORY_STYLES[c]
+            const selected = c === category
+            return (
+              <button
+                key={c}
+                type="button"
+                onClick={() => setCategory(c)}
+                className={
+                  "rounded-full px-3 py-1.5 text-xs font-semibold transition-opacity duration-150 " +
+                  (selected ? `${style.light} ${style.dark}` : "bg-neutral-100 text-neutral-400 dark:bg-neutral-800 dark:text-neutral-500")
+                }
+              >
+                {c}
+              </button>
+            )
+          })}
+        </div>
         <input
           value={title}
           onChange={(e) => setTitle(e.target.value)}

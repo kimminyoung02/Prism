@@ -13,7 +13,7 @@
       "Read(./.env)",
       "Read(./secrets/**)",
       "Bash(rm -rf:*)",
-      "Bash(git push:*)"
+      
     ]
   }
 }

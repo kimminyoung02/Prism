@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
-import { ArrowLeft, Share2 } from "lucide-react"
-import { useCommunity, SEED_COMMENTS } from "../store/CommunityContext"
+import { ArrowLeft, Share2, Eye } from "lucide-react"
+import { useCommunity, SEED_COMMENTS, CATEGORY_STYLES } from "../store/CommunityContext"
 import { useEngagement } from "../store/EngagementContext"
 import EngagementBar from "../components/EngagementBar"
 import CommentsPanel from "../components/CommentsPanel"
@@ -11,14 +11,22 @@ export default function CommunityPostDetailPage() {
   const navigate = useNavigate()
   const location = useLocation()
   const postId = (location.state as { postId?: string } | null)?.postId
-  const { getPost } = useCommunity()
+  const { getPost, viewCounts, recordView } = useCommunity()
   const { ensureSeed } = useEngagement()
   const [shareOpen, setShareOpen] = useState(false)
+  const viewedRef = useRef<string | null>(null)
 
   const post = postId ? getPost(postId) : undefined
 
   useEffect(() => {
     if (post) ensureSeed(post.id, post.seedLikes, post.seedDislikes, SEED_COMMENTS[post.id])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [post?.id])
+
+  useEffect(() => {
+    if (!post || viewedRef.current === post.id) return
+    viewedRef.current = post.id
+    recordView(post.id)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [post?.id])
 
@@ -54,10 +62,21 @@ export default function CommunityPostDetailPage() {
       </div>
 
       <div className="flex flex-col gap-3">
-        <h2 className="text-lg font-bold text-neutral-900 dark:text-neutral-100">{post.title}</h2>
-        <span className="text-xs text-neutral-400 dark:text-neutral-500">
-          {post.author} · {post.timeLabel}
+        <span
+          className={`w-fit rounded-full px-2.5 py-1 text-[11px] font-semibold ${CATEGORY_STYLES[post.category].light} ${CATEGORY_STYLES[post.category].dark}`}
+        >
+          {post.category}
         </span>
+        <h2 className="text-lg font-bold text-neutral-900 dark:text-neutral-100">{post.title}</h2>
+        <div className="flex items-center gap-2 text-xs text-neutral-400 dark:text-neutral-500">
+          <span>
+            {post.author} · {post.timeLabel}
+          </span>
+          <span className="flex items-center gap-1">
+            <Eye size={12} />
+            {post.seedViews + (viewCounts[post.id] ?? 0)}
+          </span>
+        </div>
         <p className="whitespace-pre-wrap text-sm leading-relaxed text-neutral-700 dark:text-neutral-300">{post.content}</p>
       </div>
 
