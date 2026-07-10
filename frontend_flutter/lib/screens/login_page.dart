@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
-import '../providers/profile_provider.dart';
 import '../theme/app_colors.dart';
 import '../theme/neu.dart';
 
@@ -17,6 +16,8 @@ class _LoginPageState extends State<LoginPage> {
   final _email = TextEditingController();
   final _password = TextEditingController();
   bool _showPassword = false;
+  String? _error;
+  bool _submitting = false;
 
   @override
   void dispose() {
@@ -25,18 +26,23 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  void _submitLogin() {
-    if (_email.text.trim().isNotEmpty) {
-      final profile = context.read<ProfileProvider>();
-      profile.updateProfile(profile.profile.copyWith(email: _email.text.trim()));
+  Future<void> _submitLogin() async {
+    setState(() {
+      _error = null;
+      _submitting = true;
+    });
+    final error = await context.read<AuthProvider>().signIn(_email.text.trim(), _password.text);
+    if (!mounted) return;
+    setState(() => _submitting = false);
+    if (error != null) {
+      setState(() => _error = error);
+      return;
     }
-    context.read<AuthProvider>().login();
     context.go('/my');
   }
 
   void _socialLogin() {
-    context.read<AuthProvider>().login();
-    context.go('/my');
+    setState(() => _error = '준비중인 기능이에요');
   }
 
   @override
@@ -57,20 +63,35 @@ class _LoginPageState extends State<LoginPage> {
               ],
             ),
             const SizedBox(height: 32),
-            _labeledField(context, '이메일 또는 아이디', _email, false),
+            _labeledField(context, '이메일', _email, false),
             const SizedBox(height: 16),
             _labeledField(context, '비밀번호', _password, true),
-            const SizedBox(height: 16),
+            const SizedBox(height: 8),
+            Align(
+              alignment: Alignment.centerRight,
+              child: GestureDetector(
+                onTap: () => context.push('/forgot-password'),
+                child: Text(
+                  '비밀번호를 잊으셨나요?',
+                  style: TextStyle(fontSize: 12, color: isDark ? const Color(0xFFA3A3A3) : const Color(0xFF737373)),
+                ),
+              ),
+            ),
+            if (_error != null) Padding(padding: const EdgeInsets.only(top: 8), child: Text(_error!, style: const TextStyle(fontSize: 12, color: Colors.red))),
+            const SizedBox(height: 12),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: _submitLogin,
+                onPressed: _submitting ? null : _submitLogin,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.brand500,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
-                child: const Text('로그인', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white)),
+                child: Text(
+                  _submitting ? '로그인 중...' : '로그인',
+                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),
+                ),
               ),
             ),
             const SizedBox(height: 16),

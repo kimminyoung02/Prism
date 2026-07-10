@@ -24,6 +24,16 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            <!-- Supabase 비밀번호 재설정 이메일 링크가 돌아오는 딥링크.
+                 lib/config/supabase_config.dart의 resetPasswordRedirect와 동일해야 하며,
+                 Supabase 대시보드 Authentication → URL Configuration → Redirect URLs에도
+                 com.prism.prism://reset-password 를 등록해야 함. -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="com.prism.prism" android:host="reset-password"/>
+            </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->

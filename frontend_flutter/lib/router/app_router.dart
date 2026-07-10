@@ -14,6 +14,8 @@ import '../screens/settings_page.dart';
 import '../screens/change_password_page.dart';
 import '../screens/search_terms_list_page.dart';
 import '../screens/signup_page.dart';
+import '../screens/forgot_password_page.dart';
+import '../screens/reset_password_page.dart';
 import '../screens/legal_page.dart';
 import '../screens/prism_lens_page.dart';
 import '../screens/lens_analyzing_page.dart';
@@ -56,6 +58,8 @@ final appRouter = GoRouter(
           builder: (context, state) => const SearchTermsListPage(variant: SearchTermsVariant.popular),
         ),
         GoRoute(path: '/signup', builder: (context, state) => const SignupPage()),
+        GoRoute(path: '/forgot-password', builder: (context, state) => const ForgotPasswordPage()),
+        GoRoute(path: '/reset-password', builder: (context, state) => const ResetPasswordPage()),
         GoRoute(
           path: '/legal/terms',
           builder: (context, state) => const LegalPage(title: '이용약관', paragraphs: MockData.termsOfServiceText),

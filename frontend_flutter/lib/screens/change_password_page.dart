@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import '../providers/auth_provider.dart';
 import '../theme/app_colors.dart';
 import '../theme/neu.dart';
 
@@ -15,9 +17,10 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   final _next = TextEditingController();
   final _confirm = TextEditingController();
   String? _error;
+  bool _submitting = false;
   bool _done = false;
 
-  void _submit() {
+  Future<void> _submit() async {
     if (_current.text.isEmpty || _next.text.isEmpty || _confirm.text.isEmpty) {
       setState(() => _error = '모든 항목을 입력해주세요');
       return;
@@ -26,7 +29,32 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
       setState(() => _error = '새 비밀번호가 일치하지 않아요');
       return;
     }
-    setState(() { _error = null; _done = true; });
+
+    setState(() {
+      _error = null;
+      _submitting = true;
+    });
+
+    final auth = context.read<AuthProvider>();
+    final reauthError = await auth.reauthenticate(_current.text);
+    if (!mounted) return;
+    if (reauthError != null) {
+      setState(() {
+        _submitting = false;
+        _error = reauthError;
+      });
+      return;
+    }
+
+    final updateError = await auth.updatePassword(_next.text);
+    if (!mounted) return;
+    setState(() => _submitting = false);
+    if (updateError != null) {
+      setState(() => _error = updateError);
+      return;
+    }
+
+    setState(() => _done = true);
     Future.delayed(const Duration(milliseconds: 1200), () {
       if (mounted) context.go('/my/settings');
     });
@@ -35,6 +63,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final subColor = isDark ? const Color(0xFFA3A3A3) : const Color(0xFF737373);
 
     if (_done) {
       return Center(
@@ -77,9 +106,26 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
               if (_error != null) Padding(padding: const EdgeInsets.only(top: 8), child: Text(_error!, style: const TextStyle(fontSize: 12, color: Colors.red))),
               const SizedBox(height: 16),
               ElevatedButton(
-                onPressed: _submit,
+                onPressed: _submitting ? null : _submit,
                 style: ElevatedButton.styleFrom(backgroundColor: AppColors.brand500, minimumSize: const Size.fromHeight(52), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
-                child: const Text('변경하기', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white)),
+                child: Text(_submitting ? '변경 중...' : '변경하기', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white)),
+              ),
+              const SizedBox(height: 20),
+              Center(
+                child: GestureDetector(
+                  onTap: () => context.push('/forgot-password'),
+                  child: Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(text: '현재 비밀번호를 모르시나요? ', style: TextStyle(fontSize: 12, color: subColor)),
+                        TextSpan(
+                          text: '이메일로 재설정하기',
+                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: isDark ? AppColors.brand400 : AppColors.brand600),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ],
           ),

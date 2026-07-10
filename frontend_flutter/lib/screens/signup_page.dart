@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
-import '../providers/profile_provider.dart';
 import '../theme/app_colors.dart';
 import '../theme/neu.dart';
 
@@ -19,10 +18,12 @@ class _SignupPageState extends State<SignupPage> {
   final _passwordConfirm = TextEditingController();
   final _nickname = TextEditingController();
   String? _error;
+  String? _notice;
   bool _showPassword = false;
   bool _showPasswordConfirm = false;
+  bool _submitting = false;
 
-  void _submit() {
+  Future<void> _submit() async {
     if (_email.text.trim().isEmpty || _password.text.isEmpty || _nickname.text.trim().isEmpty) {
       setState(() => _error = '모든 항목을 입력해주세요');
       return;
@@ -31,10 +32,24 @@ class _SignupPageState extends State<SignupPage> {
       setState(() => _error = '비밀번호가 일치하지 않아요');
       return;
     }
-    setState(() => _error = null);
-    final profile = context.read<ProfileProvider>();
-    profile.updateProfile(profile.profile.copyWith(nickname: _nickname.text.trim(), email: _email.text.trim()));
-    context.read<AuthProvider>().login();
+
+    setState(() {
+      _error = null;
+      _notice = null;
+      _submitting = true;
+    });
+    final result = await context.read<AuthProvider>().signUp(_email.text.trim(), _password.text, _nickname.text.trim());
+    if (!mounted) return;
+    setState(() => _submitting = false);
+
+    if (result.error != null) {
+      setState(() => _error = result.error);
+      return;
+    }
+    if (result.needsEmailConfirm) {
+      setState(() => _notice = '가입 확인 메일을 보냈어요. 메일함에서 인증 후 로그인해주세요.');
+      return;
+    }
     context.go('/my');
   }
 
@@ -61,13 +76,14 @@ class _SignupPageState extends State<SignupPage> {
           const SizedBox(height: 12),
           _field('닉네임', _nickname, false),
           if (_error != null) Padding(padding: const EdgeInsets.only(top: 8), child: Text(_error!, style: const TextStyle(fontSize: 12, color: Colors.red))),
+          if (_notice != null) Padding(padding: const EdgeInsets.only(top: 8), child: Text(_notice!, style: const TextStyle(fontSize: 12, color: Colors.green))),
           const SizedBox(height: 16),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: _submit,
+              onPressed: _submitting ? null : _submit,
               style: ElevatedButton.styleFrom(backgroundColor: AppColors.brand500, padding: const EdgeInsets.symmetric(vertical: 16), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
-              child: const Text('회원가입', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white)),
+              child: Text(_submitting ? '가입 처리 중...' : '회원가입', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white)),
             ),
           ),
           const SizedBox(height: 16),
